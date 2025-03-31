@@ -1,6 +1,6 @@
 <?php
  include_once __DIR__ . '/../public/index.php'; //Incluye el archivo index.php para ejecutar la app de Slim.
- include_once __DIR__ . '/db_Connect.php'; //Incluye el archivo de conexión a la base de datos.
+ include_once __DIR__ . '/config/db_Connect.php'; //Incluye el archivo de conexión a la base de datos.
 ?>
 
 <!DOCTYPE html>
@@ -9,9 +9,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokemon Web Cards</title>
+    <link rel="stylesheet" type="text/css" href="styles/style.css"> <!-- Enlaza el archivo CSS para el estilo de la página. -->
 </head>
 <body>
-    <h1 style="text-align: center;"><u>Bienvenido a la Web de Pokemon</u></h1>
+    <h1><u>Bienvenido a la Web de Pokemon</u></h1>
     <h2>Listado de cartas pokemonm</h2>
     <table border="1" cellpadding="5" cellspacing="0">
         <tr>
