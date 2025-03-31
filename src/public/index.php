@@ -7,7 +7,8 @@ use Slim\Factory\AppFactory;
 require __DIR__ . '/../../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME AL DIRECTORIO VENDOR.
 
 $app = AppFactory::create(); //Crea la app (El Core)
-$app->setBasePath('/ProyectoWeb/src/public'); //BasePath para el servidor local.
+$app->setBasePath('/ProyectoWeb/src/templates'); //Colocar la ruta donde se requerirá SLIM.
+//En este caso coloque mi ruta local (localhost) donde se la requiere.
 
 $app->get('/', function (Request $request, Response $response, $args) { //El string del argumento es el LOCALHOST de la APP.
     $response->getBody()->write("Hello world!");
