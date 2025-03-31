@@ -41,12 +41,12 @@
 
                 <!-- FORMULARIO -->
                 <div class="modal-body">
-                    <form action="../config/loginValidacion.php" method="post">
+                    <form method="POST" action="../config/loginValidacion.php">
                         <div class="form-group">
-                            <input type="text" class="form-control" name="username" placeholder="Usuario" required="required">		
+                            <input type="text" id="login" class="form-control" name="username" placeholder="Usuario" required="required">		
                         </div>
                         <div class="form-group">
-                            <input type="password" class="form-control" name="password" placeholder="Contraseña" required="required">	
+                            <input type="password" id="password" class="form-control" name="password" placeholder="Contraseña" required="required">	
                         </div>
 
                         <!-- SUBMIT -->
@@ -54,7 +54,6 @@
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-btn">Aceptar</button>
                         </div>
                     </form>
-                    <?php if (isset($error)) echo "<p style='color: red;'>$error</p>"; ?>
                 </div>
                 <div class="modal-footer">
                     <a href="#">Crear Cuenta</a>
