@@ -11,7 +11,7 @@ $app->setBasePath('/ProyectoWeb/src/templates'); //Colocar la ruta donde se requ
 //En este caso coloque mi ruta local (localhost) donde se la requiere.
 
 $app->get('/', function (Request $request, Response $response, $args) { //El string del argumento es el LOCALHOST de la APP.
-    $response->getBody()->write("Hello world!");
+    $response->getBody()->write("SLIM framework ON <br>"); //Escribe en el cuerpo de la respuesta.
     return $response;
 });
 

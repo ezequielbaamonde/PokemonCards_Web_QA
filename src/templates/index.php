@@ -27,8 +27,10 @@
 
         // Verifica si hay resultados y los muestra en la tabla.
         // "num_rows" Retorna el número de filas del resultado.
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) { //Creo un arreglo asociativo
+        //Creo un arreglo asociativo con pdo_fetch_assoc.
+        // "fetchAll" Recupera todas las filas de un conjunto de resultados.
+        if ($result->rowCount() > 0) {
+            foreach($result->fetchAll(PDO::FETCH_ASSOC) as $row) { 
                 echo "<tr>";
                 echo "<td>" . $row["id"] . "</td>";
                 echo "<td>" . $row["nombre"] . "</td>";
@@ -42,5 +44,4 @@
         ?>
 </body>
 </html>
-
-<?php $conn->close(); //Cierra la conexión a la base de datos. (Otra forma de cerrar la conexión) ?>
+<?php $conn = null; //Cierra la conexión a la base de datos. ?>
