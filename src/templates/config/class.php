@@ -1,5 +1,5 @@
 <?php
-/*NO LA USO EN NINGUN MOMENTO, TODAVIA*/
+/*Usada para la validación*/
 class PhpClasses{
     private $conn;
 
