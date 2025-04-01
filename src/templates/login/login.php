@@ -18,8 +18,8 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-
 </head>
+
 <body>
     <div class="text-center">
         <!-- BOTÓN -->
@@ -43,7 +43,7 @@
                 <div class="modal-body">
                     <form method="POST" action="../config/loginValidacion.php">
                         <div class="form-group">
-                            <input type="text" id="login" class="form-control" name="username" placeholder="Usuario" required="required">		
+                            <input type="text" id="user" class="form-control" name="username" placeholder="Usuario" required="required">		
                         </div>
                         <div class="form-group">
                             <input type="password" id="password" class="form-control" name="password" placeholder="Contraseña" required="required">	

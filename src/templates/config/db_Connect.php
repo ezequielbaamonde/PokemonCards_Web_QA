@@ -1,5 +1,5 @@
 <?php
-    $dsn="mysql:host=localhost;dbname=seminario_php";
+    $dsn="mysql:host=localhost;dbname=seminario_php_new";
     $username="root";
     $password="";
     try{

@@ -7,6 +7,9 @@ use Slim\Factory\AppFactory;
 require __DIR__ . '/../../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME AL DIRECTORIO VENDOR.
 
 $app = AppFactory::create(); //Crea la app (El Core)
+
+$app->addBodyParsingMiddleware(); /*facilitar la extracción de datos en formato json del body de 
+cada service con $data = $request->getParsedBody()*/
 $app->setBasePath('/ProyectoWeb/src/templates'); //Colocar la ruta donde se requerirá SLIM.
 //En este caso coloque mi ruta local (localhost) donde se la requiere.
 
