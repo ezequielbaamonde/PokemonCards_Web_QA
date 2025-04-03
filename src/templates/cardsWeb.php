@@ -1,5 +1,8 @@
 <?php
- require_once __DIR__ . '/../public/index.php'; // Requiere el archivo index.php.
+ /* DEPENDENCIAS IMPORTADAS DEL PSR de SLIM */
+ use Psr\Http\Message\ResponseInterface as Response;
+ use Psr\Http\Message\ServerRequestInterface as Request;
+ use Slim\Factory\AppFactory;
  include_once __DIR__ . '/config/db_Connect.php'; //Incluye el archivo de conexión a la base de datos.
  $conn = DB::getConnection(); //Llama a la función getConnection() de la clase DB para obtener la conexión a la base de datos.
 ?>

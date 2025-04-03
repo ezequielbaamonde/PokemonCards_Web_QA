@@ -4,7 +4,7 @@ class DB {
 
     public static function getConnection() {
         if (!self::$connection) {
-            $host = 'root';
+            $host = 'localhost';
             $dbname = 'seminario_php_new';
             $user = 'root';
             $pass = '';
