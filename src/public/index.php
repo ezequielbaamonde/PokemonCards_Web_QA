@@ -8,15 +8,39 @@ require __DIR__ . '/../../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME 
 
 $app = AppFactory::create(); //Crea la app (El Core)
 
-$app->addBodyParsingMiddleware(); /*facilitar la extracción de datos en formato json del body de 
+// Add routing and body parsing middleware
+$app->addRoutingMiddleware();
+$app->addBodyParsingMiddleware();/*facilitar la extracción de datos en formato json del body de 
 cada service con $data = $request->getParsedBody()*/
-$app->setBasePath('/ProyectoWeb/src/templates'); //Colocar la ruta donde se requerirá SLIM.
-//En este caso coloque mi ruta local (localhost) donde se la requiere.
+$app->addErrorMiddleware(true, true, true); //Manejo de errores en la app.
 
-$app->get('/', function (Request $request, Response $response, $args) { //El string del argumento es el LOCALHOST de la APP.
-    $response->getBody()->write("SLIM framework ON <br>"); //Escribe en el cuerpo de la respuesta.
+$app->setBasePath('/ProyectoWeb/src/public'); //Establece la ruta base de la app.
+
+$app->get('/', function (Request $request, Response $response) {
+    $response->getBody()->write('Hello, World!'); //Escribe en el body de la respuesta;
     return $response;
 });
+
+// Rutas de la API
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', '*')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE')
+        ->withHeader('Content-Type', 'application/json');
+});
+
+// GET: Retrieve all users
+$app->get('/users', function (Request $request, Response $response) {
+    $db = DB::getConnection();
+    $stmt = $db->query("SELECT * FROM usuario");
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $response->getBody()->write(json_encode($data));
+    return $response;
+});
+
 
 $app->run(); //Corre la APP.
 /* No es necesario cerrar la etiqueta PHP para ejecutar este codigo */
