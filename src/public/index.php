@@ -12,12 +12,13 @@ $app = AppFactory::create(); //Crea la app (El Core)
 
 // Add routing and body parsing middleware
 $app->addRoutingMiddleware();
-/*facilitar la extracción de datos en formato json del body de cada service con $data = $request->getParsedBody()*/
+/*Facilita la extracción de datos en formato json del body de cada service con $data = $request->getParsedBody()*/
 $app->addBodyParsingMiddleware();
 /*Manejo de errores detallado en la app.*/
 $app->addErrorMiddleware(true, true, true);
 
 //$app->setBasePath('/ProyectoWeb/src/public'); //Establece la ruta base de la app.
+
 /*El ENDPOINT es el primer parametro de las funciones de las rutas (Ejemplo /login), el segundo es la
 funcion que se ejecuta cuando se accede a esa ruta --->
 $app->get('/saludo/{name}', function (Request $request, Response $response, $args) {
@@ -40,7 +41,6 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
-/* Enruté los controladores al index.php */
 require_once __DIR__ . '/../templates/config/routes/routes.php'; //Importa las rutas de la app.
 
 $app->run(); //Corre la APP.
