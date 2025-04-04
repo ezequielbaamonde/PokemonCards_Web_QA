@@ -1,5 +1,7 @@
 <?php
  /* Enruté los controladores */
- require_once '../controllers/loginControler.php'; //Importa el controlador de la app.
- require_once '../controllers/usersControler.php'; //Importa el controlador de la app.
- require_once '../controllers/jwtControler.php'; //Importa el controlador del token
+ require __DIR__ . '/../controllers/loginControler.php'; 
+ require __DIR__ . '/../controllers/jwtControler.php'; 
+
+ /* PRUEBA */
+ require __DIR__ . '/../controllers/usersControler.php'; 
