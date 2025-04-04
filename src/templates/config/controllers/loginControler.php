@@ -7,6 +7,7 @@ $app->post('/login', function (Request $request, Response $response) {
     $db = DB::getConnection(); // Conexión a la base de datos.
     $params = $request->getParsedBody(); // Obtiene los datos enviados en el cuerpo de la solicitud.
     // Extrae los parámetros de la solicitud
+    $name = $params['nombre'] ?? null;
     $username = $params['usuario'] ?? null;
     $password = $params['password'] ?? null;
 
