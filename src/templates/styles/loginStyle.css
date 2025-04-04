@@ -100,10 +100,10 @@ body {
 /* --------------------------------- */
 @font-face {
 	font-family: pokemonFont_1;
-	src: url(../config/fonts/Pokemon\ Hollow.ttf);
+	src: url(../fonts/Pokemon\ Hollow.ttf);
 }
 
 @font-face {
 	font-family: pokemonFont_2;
-	src: url(../config/fonts/Pokemon\ Solid.ttf);
+	src: url(../fonts/Pokemon\ Solid.ttf);
 }

@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
 require __DIR__ . '/../../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME AL DIRECTORIO VENDOR.
-require_once __DIR__ . '/../templates/config/db_Connect.php'; //Conexión a la base de datos.
+require_once __DIR__ . '/../config/db_Connect.php'; //Conexión a la base de datos.
 
 $app = AppFactory::create(); //Crea la app (El Core)
 
@@ -41,7 +41,7 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
-require_once __DIR__ . '/../templates/config/routes/routes.php'; //Importa las rutas de la app.
+require_once __DIR__ . '/../config/routes/routes.php'; //Importa las rutas de la app.
 
 $app->run(); //Corre la APP.
 
