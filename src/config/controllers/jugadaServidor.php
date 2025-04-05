@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/db_Connect.php'; //Conexión a la base de datos.
 
-//Función solamente que retorna ID sin considerar nada preciso del inciso.
+//Función solamente que retorna ID sin considerar nada preciso del inciso
 function jugadaServidor(): int {
     $pdo = (new DB())->getConnection(); // Obtener la conexión a la base de datos
 
