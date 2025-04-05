@@ -6,13 +6,11 @@ class DB {
     public static function getConnection() {
         if (!self::$connection) { /*self se usa dentro de una clase para
             hacer referencia a elementos estáticos (métodos o propiedades) de esa misma clase.*/
-
             //Almaceno los parametros de mi conexión por PDO
             $host = 'localhost';
             $dbname = 'seminario_php_new';
             $user = 'root';
             $pass = '';
-
             //intento conexión
             try {
                 self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
