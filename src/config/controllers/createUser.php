@@ -3,7 +3,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-// POST: Crea un nuevo usuario
+// POST: Crea un nuevo usuario, OK.
 $app->post('/registro', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
     $username = $data['username'] ?? '';
