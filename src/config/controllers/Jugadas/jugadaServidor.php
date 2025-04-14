@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/db_Connect.php'; //Conexión a la base de datos.
+require_once __DIR__ . '/../../db_Connect.php';
 
 //Función solamente que retorna ID sin considerar nada preciso del inciso
 function jugadaServidor(): int {
