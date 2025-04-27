@@ -42,7 +42,7 @@ $app->get('/', function (Request $request, Response $response) {
     return $response;
 });
 
-require_once __DIR__ . '/../config/routes/routes.php'; //Importa las rutas de la app.
+require_once __DIR__ . '/../routes/routes.php'; //Importa las rutas de la app.
 
 $app->run(); //Corre la APP.
 

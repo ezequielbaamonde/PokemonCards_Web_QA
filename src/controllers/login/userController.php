@@ -143,9 +143,10 @@ $app->get('/perfil', function (Request $request, Response $response) {
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
-// PUT: Actualiza el nombre y la contraseña de un usuario logueado.
+// PUT: Actualiza el nombre de usuario y la contraseña de un usuario logueado | Valida token.
 $app->put('/usuarios/{usuario}', function (Request $request, Response $response, array $args) {
     $usernameParam = $args['usuario'];
+    
     $data = $request->getParsedBody();
     $newUsername = $data['nombre'] ?? null;
     $newPassword = $data['password'] ?? null;
@@ -205,3 +206,35 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
 })->add($jwtMiddleware); // Agrega el middleware JWT a la ruta /usuarios/{usuario}
 
 
+/*-----------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
+
+// GET: Obtener información del usuario logueado | Valida token.
+$app->get('/usuarios/{usuario}', function (Request $request, Response $response, array $args) {
+    $usernameParam = $args['usuario'];
+
+    // 1. Obtener y validar el token
+    $jwt = $request->getAttribute('jwt');
+
+    // 2. Validar que el USUARIO en el token coincida con el de la URL
+    if ($jwt->username !== $usernameParam) {
+        $response->getBody()->write(json_encode(['error' => 'No autorizado para acceder a este usuario']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+    }
+
+    // 3. Obtener información del usuario desde la base de datos
+    $db = DB::getConnection();
+    $stmt = $db->prepare("SELECT id, nombre, usuario FROM usuario WHERE usuario = :username");
+    $stmt->bindParam(':username', $usernameParam);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+    }
+
+    // 4. Retornar la información del usuario
+    $response->getBody()->write(json_encode($user));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+})->add($jwtMiddleware); // Agrega el middleware JWT a la ruta /usuarios/{usuario}
