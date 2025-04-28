@@ -24,7 +24,15 @@ $jwtMiddleware = function ($request, $handler) {
         return $handler->handle($request);
     } catch (Exception $e) {
         $response = new Response();
+        $response->getBody()->write(json_encode([
+            'error' => 'Token inválido',
+            'detalle' => $e->getMessage() // <-- Mostramos el motivo exacto del error
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+    }
+    /*catch (Exception $e) {
+        $response = new Response();
         $response->getBody()->write(json_encode(['error' => 'Token inválido']));
         return $response->withStatus(401);
-    }
+    }*/
 };
