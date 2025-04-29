@@ -15,17 +15,19 @@ $app->post('/login', function (Request $request, Response $response) {
     // Extrae los parámetros de la solicitud
     //name = $params['nombre'] ?? null;
     $username = $params['usuario'] ?? null;
+    $name = $params['nombre'] ?? null;
     $password = $params['password'] ?? null;
 
     // Validación de datos
-    if (!$username || !$password) {
-        $response->getBody()->write(json_encode(['error' => 'Username and password are required']));
+    if (!$username || !$password || !$name) {
+        $response->getBody()->write(json_encode(['error' => 'El usuario, el nombre y la clave son requeridos']));
         //return $response->withStatus(400);
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
-    $stmt = $db->prepare("SELECT * FROM usuario WHERE usuario = :username");
+    $stmt = $db->prepare("SELECT * FROM usuario WHERE usuario = :username and nombre = :name"); // Prepara la consulta SQL para buscar el usuario por nombre y contraseña.
     $stmt->bindParam(':username', $username);
+    $stmt->bindParam(':name', $name); // Vincula el parámetro :name a la variable $name.
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC); // Busca el usuario en la base de datos.
 
@@ -73,6 +75,7 @@ $app->post('/login', function (Request $request, Response $response) {
 $app->post('/registro', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
     $username = $data['username'] ?? '';
+    $name = $data['nombre'] ?? '';
     $password = $data['password'] ?? '';
 
     /* Validación del nombre de usuario: debe tener entre 6 y 20 caracteres alfanuméricos preg_match es una
@@ -85,6 +88,12 @@ $app->post('/registro', function (Request $request, Response $response) {
         $response->getBody()->write(json_encode(['error' => 'El nombre de usuario debe tener entre 6 y 20 caracteres alfanuméricos.']));
         return $response->withStatus(400);
     }
+
+    if (strlen($name) < 6 || strlen($name) > 20) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre debe tener entre 6 y 20 caracteres.']));
+        return $response->withStatus(400);
+    }
+
     // Validación de la clave
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $password)) {
         $response->getBody()->write(json_encode(['error' => 'La clave debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.']));
@@ -104,7 +113,8 @@ $app->post('/registro', function (Request $request, Response $response) {
     }
     // Insertar el nuevo usuario
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT); // Hashear la contraseña antes de almacenarla en la base de datos.
-    $stmt = $db->prepare("INSERT INTO usuario (usuario, password) VALUES (:username, :password)");
+    $stmt = $db->prepare("INSERT INTO usuario (nombre, usuario, password) VALUES (:nombre, :username, :password)");
+    $stmt->bindParam(':nombre', $name);
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':password', $hashedPassword);
 
@@ -166,9 +176,9 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
-    if (!preg_match('/^[a-zA-Z0-9]{6,20}$/', $newUsername)) {
-        $response->getBody()->write(json_encode(['error' => 'El nombre debe tener entre 6 y 20 caracteres alfanuméricos']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    if (strlen($newUsername) < 6 || strlen($newUsername) > 20) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre debe tener entre 6 y 20 caracteres.']));
+        return $response->withStatus(400);
     }
 
     if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/', $newPassword)) {
@@ -191,13 +201,17 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
     }
 
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-    $stmt = $db->prepare("UPDATE usuario SET usuario = :newUsername, password = :newPassword WHERE usuario = :oldUsername");
+    $stmt = $db->prepare("UPDATE usuario SET nombre = :newUsername, password = :newPassword WHERE usuario = :oldUsername");
     $stmt->bindParam(':newUsername', $newUsername);
     $stmt->bindParam(':newPassword', $hashedPassword);
     $stmt->bindParam(':oldUsername', $usernameParam);
 
     if ($stmt->execute()) {
-        $response->getBody()->write(json_encode(['message' => 'Usuario actualizado exitosamente']));
+        $response->getBody()->write(json_encode([
+            'message' => 'Usuario actualizado exitosamente',
+            'nuevo_nombre' => $newUsername,
+            'nueva_password' => $newPassword
+        ]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } else {
         $response->getBody()->write(json_encode(['error' => 'Error al actualizar el usuario']));
