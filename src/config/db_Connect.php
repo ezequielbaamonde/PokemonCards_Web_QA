@@ -8,14 +8,14 @@ class DB {
             hacer referencia a elementos estáticos (métodos o propiedades) de esa misma clase.*/
             //Almaceno los parametros de mi conexión por PDO
             $host = 'localhost';
-            $dbname = 'seminario_php_use';
+            $dbname = 'proyecto_seminariophp';
             $user = 'root';
             $pass = '';
             //intento conexión
             try {
                 self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                echo json_encode(['success' => 'Connected to the database successfully.']);
+                /*echo json_encode(['success' => 'Connected to the database successfully.']);*/
             } catch (PDOException $e) {
                 die(json_encode(['error' => $e->getMessage()])); //Sino, arroja mensaje por excepción
             }

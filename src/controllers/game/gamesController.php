@@ -61,6 +61,15 @@ $app->post('/partidas', function (Request $request, Response $response) {
     $stmt->bindParam(':idMazo', $idMazo);
     $stmt->execute();
 
+    // Actualizar estado de las cartas en mazo_carta del servidor
+    $stmt = $db->prepare("
+        UPDATE mazo_carta
+        SET estado = 'en_mano'
+        WHERE mazo_id IN (SELECT id FROM mazo WHERE usuario_id = 1)
+    ");
+    $stmt->execute();
+
+
     // Buscamos las cartas asociadas al mazo
     //mc es un alias para mazo_carta y c es un alias para carta
     // Se hace un INNER JOIN para obtener las cartas que están en el mazo
@@ -119,7 +128,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
         SELECT mc.carta_id, c.ataque, c.atributo_id
         FROM mazo_carta mc
         JOIN carta c ON mc.carta_id = c.id
-        WHERE mc.carta_id = :idCartaJugador AND mc.mazo_id = :idMazo AND mc.estado != 'descartado'
+        WHERE mc.carta_id = :idCartaJugador AND mc.mazo_id = :idMazo AND mc.estado = 'en_mano'
     ");
     $stmt->bindParam(':idCartaJugador', $idCartaJugador);
     $stmt->bindParam(':idMazo', $partida['mazo_id']);
@@ -162,8 +171,15 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     $stmt->bindParam(':resultado', $resultadoFinal);
     $stmt->execute();
 
-    $stmt = $db->prepare("UPDATE mazo_carta SET estado = 'descartado' WHERE carta_id = :idCartaJugador");
+    // Actualizar el estado de la carta del jugador a 'descartado'
+    $stmt = $db->prepare("
+        UPDATE mazo_carta 
+        SET estado = 'descartado' 
+        WHERE carta_id = :idCartaJugador AND mazo_id = :mazoId
+    ");
     $stmt->bindParam(':idCartaJugador', $idCartaJugador);
+    $stmt->bindParam(':mazoId', $partida['mazo_id']);
+
     $stmt->execute();
 
     $stmt = $db->prepare("
@@ -176,6 +192,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     $ganadas = 0;
     $perdidas = 0;
 
+    // Si se han jugado 5 rondas, contar las ganadas y perdidas
     if ($cantidadJugadas == 5) {
         $stmt = $db->prepare("
             SELECT el_usuario FROM jugada WHERE partida_id = :idPartida
@@ -188,14 +205,6 @@ $app->post('/jugadas', function (Request $request, Response $response) {
             if ($res === 'gano') $ganadas++;
             if ($res === 'perdio') $perdidas++;
         }
-
-        $estadoFinal = 'finalizada';
-        $stmt = $db->prepare("
-            UPDATE partida SET estado = :estadoFinal WHERE id = :idPartida
-        ");
-        $stmt->bindParam(':estadoFinal', $estadoFinal);
-        $stmt->bindParam(':idPartida', $idPartida);
-        $stmt->execute();
     }
 
     //El round redondea a 2 decimales
@@ -205,26 +214,38 @@ $app->post('/jugadas', function (Request $request, Response $response) {
         'fuerza_servidor' => round($fuerzaServidor, 2)
     ];
 
+    // Si se han jugado 5 rondas, determinar el resultado final
     if ($cantidadJugadas == 5) {
         if ($ganadas > $perdidas) {
             $data['resultado_final'] = 'Usuario ganó la partida';
+            $resultadoUsuario = 'gano';
         } elseif ($ganadas < $perdidas) {
             $data['resultado_final'] = 'Servidor ganó la partida';
+            $resultadoUsuario = 'perdió';
         } else {
-            $data['resultado_final'] = 'La partida terminó empatada';
+            $data['resultado_final'] = 'La partida terminó en empate';
+            $resultadoUsuario = 'empato';
         }
+        
+        // Actualizar resultado de y de la partida el usuario
+        $estadoFinal = 'finalizada';
+        $stmt = $db->prepare("
+            UPDATE partida 
+            SET estado = :estadoFinal, el_usuario = :resultadoUsuario 
+            WHERE id = :idPartida
+        ");
 
-        // Actualizar el estado de las cartas en mazo_carta a 'en_mazo' para el SV
+        $stmt->bindParam(':estadoFinal', $estadoFinal);
+        $stmt->bindParam(':resultadoUsuario', $resultadoUsuario);
+        $stmt->bindParam(':idPartida', $idPartida);
+        $stmt->execute();
+
+        // Reiniciar el mazo del servidor
         $stmt = $db->prepare("
             UPDATE mazo_carta 
             SET estado = 'en_mazo' 
-            WHERE mazo_id = (
-                SELECT mazo_id FROM partida WHERE id = :idPartida
-            ) AND carta_id IN (
-                SELECT carta_id FROM carta WHERE usuario_id = 1
-            )
+            WHERE mazo_id IN (SELECT id FROM mazo WHERE usuario_id = 1)
         ");
-        $stmt->bindParam(':idPartida', $idPartida);
         $stmt->execute();
     }
 

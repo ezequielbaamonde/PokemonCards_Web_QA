@@ -15,19 +15,17 @@ $app->post('/login', function (Request $request, Response $response) {
     // Extrae los parámetros de la solicitud
     //name = $params['nombre'] ?? null;
     $username = $params['usuario'] ?? null;
-    $name = $params['nombre'] ?? null;
     $password = $params['password'] ?? null;
 
     // Validación de datos
-    if (!$username || !$password || !$name) {
-        $response->getBody()->write(json_encode(['error' => 'El usuario, el nombre y la clave son requeridos']));
+    if (!$username || !$password) {
+        $response->getBody()->write(json_encode(['error' => 'El usuario y la clave son requeridos']));
         //return $response->withStatus(400);
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
-    $stmt = $db->prepare("SELECT * FROM usuario WHERE usuario = :username and nombre = :name"); // Prepara la consulta SQL para buscar el usuario por nombre y contraseña.
+    $stmt = $db->prepare("SELECT * FROM usuario WHERE usuario = :username"); // Prepara la consulta SQL para buscar el usuario por nombre y contraseña.
     $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':name', $name); // Vincula el parámetro :name a la variable $name.
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC); // Busca el usuario en la base de datos.
 
@@ -130,7 +128,7 @@ $app->post('/registro', function (Request $request, Response $response) {
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
-//Valida TOKEN retornado tras LOGIN.
+/*Valida TOKEN retornado tras LOGIN.
 require_once __DIR__ . '/../../middlewares/JwtMiddleware.php'; // importar el middleware
 
 $app->get('/perfil', function (Request $request, Response $response) {
@@ -148,7 +146,7 @@ $app->get('/perfil', function (Request $request, Response $response) {
         ]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
     }
-})->add($jwtMiddleware); // agrega el middleware JWT a la ruta /perfil
+})->add($jwtMiddleware); // agrega el middleware JWT a la ruta /perfil*/
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
