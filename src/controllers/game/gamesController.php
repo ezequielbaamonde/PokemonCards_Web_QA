@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+require_once __DIR__ . '/../../middlewares/JwtMiddleware.php'; // importar el middleware
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
@@ -221,7 +222,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
             $resultadoUsuario = 'gano';
         } elseif ($ganadas < $perdidas) {
             $data['resultado_final'] = 'Servidor ganó la partida';
-            $resultadoUsuario = 'perdió';
+            $resultadoUsuario = 'perdio';
         } else {
             $data['resultado_final'] = 'La partida terminó en empate';
             $resultadoUsuario = 'empato';
@@ -314,18 +315,12 @@ $app->get('/estadistica', function (Request $request, Response $response) {
     $sql = "
         SELECT 
             u.nombre AS usuario,
-            COUNT(*) AS partidas_ganadas
+            COUNT(*) AS total_partidas,
+            SUM(CASE WHEN p.el_usuario = 'gano' THEN 1 ELSE 0 END) AS partidas_ganadas,
+            SUM(CASE WHEN p.el_usuario = 'perdio' THEN 1 ELSE 0 END) AS partidas_perdidas,
+            SUM(CASE WHEN p.el_usuario = 'empato' THEN 1 ELSE 0 END) AS partidas_empatadas
         FROM usuario u
         JOIN partida p ON p.usuario_id = u.id
-        JOIN (
-            SELECT 
-                j.partida_id
-            FROM jugada j
-            GROUP BY j.partida_id
-            HAVING 
-                SUM(CASE WHEN j.el_usuario = 'gano' THEN 1 ELSE 0 END) > 
-                SUM(CASE WHEN j.el_usuario = 'perdio' THEN 1 ELSE 0 END)
-        ) partidas_ganadas ON partidas_ganadas.partida_id = p.id
         GROUP BY u.id, u.nombre
         ORDER BY usuario
     ";

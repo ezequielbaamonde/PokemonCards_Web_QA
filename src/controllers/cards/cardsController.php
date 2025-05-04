@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+require_once __DIR__ . '/../../middlewares/JwtMiddleware.php'; // importar el middleware
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/

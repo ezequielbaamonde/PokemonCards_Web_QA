@@ -4,6 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+require_once __DIR__ . '/../../middlewares/JwtMiddleware.php'; // importar el middleware
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
@@ -129,8 +130,6 @@ $app->post('/registro', function (Request $request, Response $response) {
 /*-----------------------------------------------------------------------*/
 
 /*Valida TOKEN retornado tras LOGIN.
-require_once __DIR__ . '/../../middlewares/JwtMiddleware.php'; // importar el middleware
-
 $app->get('/perfil', function (Request $request, Response $response) {
     try {
         $user = $request->getAttribute('jwt'); // decodifica el token JWT
