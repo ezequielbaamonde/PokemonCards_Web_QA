@@ -126,7 +126,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     }
 
     $stmt = $db->prepare("
-        SELECT mc.carta_id, c.ataque, c.atributo_id
+        SELECT mc.carta_id, c.ataque, c.atributo_id, c.nombre, c.ataque_nombre
         FROM mazo_carta mc
         JOIN carta c ON mc.carta_id = c.id
         WHERE mc.carta_id = :idCartaJugador AND mc.mazo_id = :idMazo AND mc.estado = 'en_mano'
@@ -211,8 +211,9 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     //El round redondea a 2 decimales
     $data = [
         'carta_servidor' => $cartaServidor,
-        'fuerza_usuario' => round($fuerzaJugador, 2),
-        'fuerza_servidor' => round($fuerzaServidor, 2)
+        'fuerza_servidor' => round($fuerzaServidor, 2),
+        'fuerza_usuario' => round($fuerzaJugador, 2)
+        
     ];
 
     // Si se han jugado 5 rondas, determinar el resultado final

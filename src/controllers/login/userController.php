@@ -73,7 +73,7 @@ $app->post('/login', function (Request $request, Response $response) {
 // POST: Crea un nuevo usuario.
 $app->post('/registro', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
-    $username = $data['username'] ?? '';
+    $username = $data['usuario'] ?? ''; //Corregido para unificar con el campo de "usuario" del login
     $name = $data['nombre'] ?? '';
     $password = $data['password'] ?? '';
     
@@ -204,8 +204,8 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
     if ($stmt->execute()) {
         $response->getBody()->write(json_encode([
             'message' => 'Usuario actualizado exitosamente',
-            'nuevo_nombre' => $newUsername,
-            'nueva_password' => $newPassword
+            'nuevo_nombre' => $newUsername
+            //'nueva_password' => '$newPassword'
         ]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     } else {
@@ -218,23 +218,23 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
-// GET: Obtener información del usuario logueado | Valida token.
+// GET: Obtener información del usuario logueado por ID | Valida token.
 $app->get('/usuarios/{usuario}', function (Request $request, Response $response, array $args) {
-    $usernameParam = $args['usuario'];
+    $userIdParam = $args['usuario']; //ID del usuario a obtener
 
     // 1. Obtener y validar el token
     $jwt = $request->getAttribute('jwt');
 
-    // 2. Validar que el USUARIO en el token coincida con el de la URL
-    if ($jwt->username !== $usernameParam) {
+    // 2. Validar que el ID en el token coincida con el de la URL
+    if ($jwt->sub != $userIdParam) {
         $response->getBody()->write(json_encode(['error' => 'No autorizado para acceder a este usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
 
     // 3. Obtener información del usuario desde la base de datos
     $db = DB::getConnection();
-    $stmt = $db->prepare("SELECT id, nombre, usuario FROM usuario WHERE usuario = :username");
-    $stmt->bindParam(':username', $usernameParam);
+    $stmt = $db->prepare("SELECT id, nombre, usuario FROM usuario WHERE id = :id");
+    $stmt->bindParam(':id', $userIdParam);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -246,4 +246,4 @@ $app->get('/usuarios/{usuario}', function (Request $request, Response $response,
     // 4. Retornar la información del usuario
     $response->getBody()->write(json_encode($user));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-})->add($jwtMiddleware); // Agrega el middleware JWT a la ruta /usuarios/{usuario}
+})->add($jwtMiddleware); // Agrega el middleware JWT a la ruta /usuarios/{id}
