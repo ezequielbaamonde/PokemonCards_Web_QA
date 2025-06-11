@@ -2,9 +2,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import RegistroPage from './pages/registro/RegistroPage'; // Asegurate de tener este archivo creado
-// import LoginPage from './pages/LoginPage'; // Si tenés login
-// import HomePage from './pages/HomePage'; // Página de inicio opcional
 
 //Estilos
 import './assets/styles/style.css'
@@ -16,10 +13,9 @@ import NavBarComponent from './components/NavBarComponent';
 
 //Páginas
 import StatPage from './pages/stat/StatPage'
-
-/*Simulación de LOG
-const userLog = { nombre: 'Ezequiel' }; o `null` si no está logueado*/
-
+import RegistroPage from './pages/registro/RegistroPage';
+// import LoginPage from './pages/LoginPage'; // Si tenés login
+// import HomePage from './pages/HomePage'; // Página de inicio opcional
 
 const App = () => {
   const [user, setUser] = useState(null); //Utilizamos estados dinámicos para los valores de variables, base es NULL
