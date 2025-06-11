@@ -312,18 +312,19 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', function (Request $re
 /* Estadisticas  */
 $app->get('/estadistica', function (Request $request, Response $response) {
     $db = DB::getConnection();
-
+    //AÑADIMOS u.id para que no de error el KEYMAP en REACT
     $sql = "
         SELECT 
-            u.nombre AS usuario,
+            u.id,
+            u.nombre,
             COUNT(*) AS total_partidas,
-            SUM(CASE WHEN p.el_usuario = 'gano' THEN 1 ELSE 0 END) AS partidas_ganadas,
-            SUM(CASE WHEN p.el_usuario = 'perdio' THEN 1 ELSE 0 END) AS partidas_perdidas,
-            SUM(CASE WHEN p.el_usuario = 'empato' THEN 1 ELSE 0 END) AS partidas_empatadas
+            SUM(CASE WHEN p.el_usuario = 'gano' THEN 1 ELSE 0 END) AS ganadas,
+            SUM(CASE WHEN p.el_usuario = 'perdio' THEN 1 ELSE 0 END) AS perdidas,
+            SUM(CASE WHEN p.el_usuario = 'empato' THEN 1 ELSE 0 END) AS empatadas
         FROM usuario u
         JOIN partida p ON p.usuario_id = u.id
         GROUP BY u.id, u.nombre
-        ORDER BY usuario
+        ORDER BY u.nombre
     ";
 
     $stmt = $db->query($sql);

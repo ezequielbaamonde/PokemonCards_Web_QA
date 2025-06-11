@@ -1,6 +1,10 @@
 /* Punto de entrada de la aplicacion que renderiza el componente raíz en el DOM */
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import RegistroPage from './pages/registro/RegistroPage'; // Asegurate de tener este archivo creado
+// import LoginPage from './pages/LoginPage'; // Si tenés login
+// import HomePage from './pages/HomePage'; // Página de inicio opcional
 
 //Estilos
 import './assets/styles/style.css'
@@ -9,6 +13,8 @@ import './assets/styles/style.css'
 import HeaderComponent from './components/HeaderComponent'
 import FooterComponent from './components/FooterComponent'
 import NavBarComponent from './components/NavBarComponent';
+
+//Páginas
 import StatPage from './pages/stat/StatPage'
 
 /*Simulación de LOG
@@ -49,7 +55,7 @@ const App = () => {
 
 
   return (
-    <>
+    <BrowserRouter>
       <div className="app-container">
         <header>
           <HeaderComponent />
@@ -57,17 +63,20 @@ const App = () => {
         </header>
 
         <main className="main-content">
-          {/* Aca iría el contenido de tu página */}
-          {/* <h2>Bienvenido a nuestra web</h2>
-          <p>Contenido de ejemplo para mostrar cómo se comporta el footer.</p> */}
-          <StatPage />
+          <Routes>
+            <Route path="/" element={<StatPage />} />
+            <Route path="/registro" element={<RegistroPage />} />
+            {/* <Route path="/login" element={<LoginPage />} />
+            <Route path="/home" element={<HomePage />} /> */}
+            {/* Agregá más rutas si tenés otras páginas */}
+          </Routes>
         </main>
-            
+
         <footer>
           <FooterComponent />
         </footer>
       </div>
-    </>
+    </BrowserRouter>
   );
 };
 

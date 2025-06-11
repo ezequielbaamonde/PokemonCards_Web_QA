@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'; //Importante
 //import './App.css'
 
 const NavBarComponent = ({ user }) => {
@@ -14,8 +15,8 @@ const NavBarComponent = ({ user }) => {
 
         {!user ? (
           <>
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/registro">Registro de usuario</a></li>
+            <li><Link to= "/">Inicio</Link></li>
+            <li><Link to="/registro">Registro de usuario</Link></li>
             <li><a href="/login">Login</a></li>
           </>
         ) : (

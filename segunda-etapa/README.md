@@ -37,3 +37,10 @@ useEffect(() => {
     // cleanup (opcional), se ejecuta antes de desmontar o actualizar
   };
 }, [dependencias]);
+
+
+> Modificamos consulta SQL en endpoint de /ESTADISTICA. Colocamos que devuelva el ID del usuario porque en React se necesita una clave (key) única y estable para cada elemento renderizado en bucles (.map()).
+ > Sin el id: React usaría índices como key, lo cual rompe buenas prácticas y puede causar bugs al actualizar listas dinámicas
+
+> Instale la libreria "react-router-dom" con "npm install react-router-dom" en la raíz del proyeto para linkear componentes mediante <a Link to...>.
+ > Usar solo <a href=""> recarga la página completa, y eso rompe el flujo de una SPA (Single Page App) como React. En cambio, Link de React Router actualiza la URL y renderiza solo el componente correspondiente sin recargar.

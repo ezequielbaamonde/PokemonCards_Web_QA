@@ -1,62 +1,70 @@
-import React, { useState, useMemo } from "react";
-
-// Ejemplo de datos simulados
-const users = [
-    { id: 1, nombre: "Ana", ganadas: 8, perdidas: 2, empatadas: 0 },
-    { id: 2, nombre: "Luis", ganadas: 5, perdidas: 3, empatadas: 2 },
-    { id: 3, nombre: "Sofía", ganadas: 2, perdidas: 5, empatadas: 3 },
-    { id: 4, nombre: "Carlos", ganadas: 7, perdidas: 2, empatadas: 1 },
-    { id: 5, nombre: "Marta", ganadas: 4, perdidas: 4, empatadas: 2 },
-    { id: 6, nombre: "Pedro", ganadas: 1, perdidas: 8, empatadas: 1 },
-    { id: 7, nombre: "Lucía", ganadas: 6, perdidas: 2, empatadas: 2 },
-];
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 
 function calcularPromedio(ganadas, total) {
-    return total === 0 ? 0 : (ganadas / total) * 100;
+    return total === 0 ? 0 : (ganadas / total) * 100; /*Si total es 0, devuelve 0 para evitar una división por cero.
+                                                      Si no, divide ganadas entre total y multiplica el resultado por 100,
+                                                      obteniendo así el porcentaje de partidas ganadas.*/
 }
 
 function StatPage() {
     const [orden, setOrden] = useState("mejor");
     const [pagina, setPagina] = useState(1);
+    const [usuarios, setUsuarios] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const porPagina = 5;
 
-    // Calcula los datos con promedios
-    const usuariosConPromedio = useMemo(() =>
-        users.map(u => {
-            const total = u.ganadas + u.perdidas + u.empatadas;
-            return {
-                ...u,
-                total,
-                promedio: calcularPromedio(u.ganadas, total)
-            };
-        }), []
-    );
+    useEffect(() => {
+        setLoading(true);
+        axios.get("http://localhost:8000/estadistica")
+            .then(res => {
+                const adaptados = res.data.map(u => { /*res.data es el array y la funcion MAP recorre el arreglo. 
+                    u toma cada elemento, y ADAPTADOS es el resultado de la función aplicada*/
+                    return {
+                        ...u,
+                        total: u.total_partidas,
+                        promedio: calcularPromedio(u.ganadas, u.total_partidas)
+                    };
+                });
+                setUsuarios(adaptados); //Setea la lista de usuarios de lo que devolvió la API
+                setError(null);
+            })
+            .catch(err => {
+                console.error("Error al cargar estadísticas:", err);
+                setError("No se pudieron cargar las estadísticas.");
+            })
+            .finally(() => setLoading(false));
+    }, []);
 
-    // Ordena los usuarios
-    const usuariosOrdenados = useMemo(() => {
-        const copia = [...usuariosConPromedio];
-        copia.sort((a, b) =>
+    const usuariosOrdenados = useMemo(() => { //useMemo ayuda a optimizar el rendimiento evitando cálculos repetidos cuando los datos relevantes no han cambiado.
+        const copia = [...usuarios];
+        //.sort() modifica el array original, por eso antes se hace const copia = [...usuarios]; para no alterar el array original usuarios.
+        copia.sort((a, b) => // ordena el array copia de usuarios según el promedio de cada usuario.
+        //Si orden es "mejor", ordena de mayor a menor (b.promedio - a.promedio), es decir, los usuarios con mejor promedio aparecen primero.
+        //Si no, ordena de menor a mayor (a.promedio - b.promedio).
             orden === "mejor"
                 ? b.promedio - a.promedio
                 : a.promedio - b.promedio
         );
         return copia;
-    }, [usuariosConPromedio, orden]);
+    }, [usuarios, orden]);
 
-    // Mejor usuario
     const mejorPromedio = usuariosOrdenados[0]?.promedio ?? 0;
 
-    // Paginado
     const totalPaginas = Math.ceil(usuariosOrdenados.length / porPagina);
     const usuariosPagina = usuariosOrdenados.slice(
         (pagina - 1) * porPagina,
         pagina * porPagina
     );
 
+    if (loading) return <p>Cargando estadísticas...</p>;
+    if (error) return <p>{error}</p>;
+
     return (
-        <div className= "statpage-container">
+        <div className="statpage-container">
             <h2>Estadísticas de Usuarios</h2>
-            <div className= "botones-perfom">
+            <div className="botones-perfom">
                 <button
                     onClick={() => setOrden("mejor")}
                     disabled={orden === "mejor"}
@@ -83,9 +91,9 @@ function StatPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {usuariosPagina.map((u, idx) => (
+                    {usuariosPagina.map((u) => (
                         <tr
-                            key={u.id}
+                            key={u.id} // solo para uso interno de React
                             style={
                                 u.promedio === mejorPromedio && orden === "mejor"
                                     ? { background: "#EE4232", fontWeight: "bold" }
@@ -97,7 +105,7 @@ function StatPage() {
                             <td>{u.ganadas}</td>
                             <td>{u.perdidas}</td>
                             <td>{u.empatadas}</td>
-                            <td>{u.promedio.toFixed(2)}</td>
+                            <td>{u.promedio.toFixed(2)}</td> {/*Convierte el promedio en un string de 2 decimales*/}
                         </tr>
                     ))}
                 </tbody>
