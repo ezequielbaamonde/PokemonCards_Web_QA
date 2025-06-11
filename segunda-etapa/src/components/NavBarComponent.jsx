@@ -2,10 +2,15 @@ import { useState } from 'react'
 //import './App.css'
 
 const NavBarComponent = ({ user }) => {
+  const botonLogout = () => {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('token');
+    window.location.reload(); // O actualizar estado
+  };  
+
   return (
     <nav className="navbar">
       <ul className="navbar-links">
-        
 
         {!user ? (
           <>
@@ -19,7 +24,7 @@ const NavBarComponent = ({ user }) => {
             <li><a href="/">Inicio</a></li>
             <li><a href="/mis-mazos">Mis mazos</a></li>
             <li><a href="/editar-usuario">Editar usuario</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><button on onClick={botonLogout}> Logout </button></li>
           </>
         )}
       </ul>
