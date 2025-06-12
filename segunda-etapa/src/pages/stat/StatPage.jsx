@@ -91,23 +91,31 @@ function StatPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {usuariosPagina.map((u) => (
-                        <tr
-                            key={u.id} // solo para uso interno de React
-                            style={
-                                u.promedio === mejorPromedio && orden === "mejor"
-                                    ? { background: "#EE4232", fontWeight: "bold" }
-                                    : {}
-                            }
-                        >
-                            <td>{u.nombre}</td>
-                            <td>{u.total}</td>
-                            <td>{u.ganadas}</td>
-                            <td>{u.perdidas}</td>
-                            <td>{u.empatadas}</td>
-                            <td>{u.promedio.toFixed(2)}</td> {/*Convierte el promedio en un string de 2 decimales*/}
-                        </tr>
-                    ))}
+                 {usuariosPagina.length > 0 ? (
+                   usuariosPagina.map((u) => (
+                     <tr
+                       key={u.id}
+                       style={
+                         u.promedio === mejorPromedio && orden === "mejor"
+                           ? { background: "#EE4232", fontWeight: "bold" }
+                           : {}
+                       }
+                     >
+                       <td>{u.nombre}</td>
+                       <td>{u.total}</td>
+                       <td>{u.ganadas}</td>
+                       <td>{u.perdidas}</td>
+                       <td>{u.empatadas}</td>
+                       <td>{u.promedio.toFixed(2)}</td>
+                     </tr>
+                   ))
+                 ) : (
+                   <tr>
+                     <td colSpan="6" style={{ textAlign: "center", padding: 10 }}>
+                       No hay usuarios para mostrar
+                     </td>
+                   </tr>
+                  )}
                 </tbody>
             </table>
             <div style={{ marginTop: 16 }}>

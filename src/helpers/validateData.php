@@ -41,8 +41,8 @@ function validatePassword(string $password): ?string {
 }
 
 function validateName(string $name): ?string {
-    if (strlen($name) < 2 || strlen($name) > 20) {
-        return 'El nombre debe tener entre 2 y 20 caracteres.';
+    if (strlen($name) < 1 || strlen($name) > 30) {
+        return 'El nombre debe tener entre 1 y 30 caracteres.';
     }
     if (!preg_match('/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/u', $name)) {
         foreach (preg_split('//u', $name, -1, PREG_SPLIT_NO_EMPTY) as $char) {

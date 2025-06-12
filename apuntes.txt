@@ -1,0 +1,29 @@
+> Prueba de LOCALSTORAGE = localStorage.setItem('usuario', 3) | localStorage.setItem('token', 'tutoken')
+
+El hook useEffect en React sirve para ejecutar código secundario (efectos) en tus componentes funcionales. Es decir, se utiliza para manejar efectos colaterales, como:
+    - Llamadas a APIs (fetch/axios)
+    - Suscripciones o listeners (como window.addEventListener)
+    - Manipulación del DOM
+    - Timers (setTimeout, setInterval)
+    - Sincronización con localStorage, etc...
+
+useEffect(() => {
+  // código que se ejecuta después de que el componente se renderiza
+
+  return () => {
+    // cleanup (opcional), se ejecuta antes de desmontar o actualizar
+  };
+}, [dependencias]);
+
+El frontend (React) debe hacer las solicitudes con withCredentials
+Esto es súper importante. En React, cuando usás Axios, debés permitir que el navegador envíe cookies con la solicitud.
+- Ejemplo:
+  axios.get('http://localhost:8000/usuarios/ezequiel', {
+    withCredentials: true
+  })
+  .then(response => {
+    setUser(response.data);
+  })
+  .catch(() => {
+  setUser(null);
+  });

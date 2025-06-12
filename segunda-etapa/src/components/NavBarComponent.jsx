@@ -17,7 +17,7 @@ const NavBarComponent = ({ user }) => {
           <>
             <li><Link to= "/">Inicio</Link></li>
             <li><Link to="/registro">Registro de usuario</Link></li>
-            <li><a href="/login">Login</a></li>
+            <li><Link to="/login">Login</Link></li>
           </>
         ) : (
           <>
@@ -25,7 +25,7 @@ const NavBarComponent = ({ user }) => {
             <li><a href="/">Inicio</a></li>
             <li><a href="/mis-mazos">Mis mazos</a></li>
             <li><a href="/editar-usuario">Editar usuario</a></li>
-            <li><button on onClick={botonLogout}> Logout </button></li>
+            <li><button onClick={botonLogout}> Logout </button></li>
           </>
         )}
       </ul>

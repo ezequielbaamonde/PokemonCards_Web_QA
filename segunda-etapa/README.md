@@ -15,32 +15,17 @@ If you are developing a production application, we recommend using TypeScript wi
 
 -----------------------------------------------
 Adiciones al código:
-
-Añadimos las políticas CORS para las respuestas por parte del servidor a solicitudes HTTP del cliente. Estas fueron
-añadidas en el index.php del backend del proyecto mediante HEADERS. Además, en cada consumo de la API se aclara la
-instrucción "withCredentials: true" que es esencial para que CORS permita enviar cookies o headers sensibles como el
-JWT Token.
-
- > Prueba de LOCALSTORAGE = localStorage.setItem('usuario', 3) | localStorage.setItem('token', 'tutoken')
-
-El hook useEffect en React sirve para ejecutar código secundario (efectos) en tus componentes funcionales. Es decir, se utiliza para manejar efectos colaterales, como:
-    - Llamadas a APIs (fetch/axios)
-    - Suscripciones o listeners (como window.addEventListener)
-    - Manipulación del DOM
-    - Timers (setTimeout, setInterval)
-    - Sincronización con localStorage, etc...
-
-useEffect(() => {
-  // código que se ejecuta después de que el componente se renderiza
-
-  return () => {
-    // cleanup (opcional), se ejecuta antes de desmontar o actualizar
-  };
-}, [dependencias]);
-
+> Añadimos las políticas CORS para las respuestas por parte del servidor a solicitudes HTTP del cliente. Estas fueron añadidas en el index.php del backend del proyecto mediante HEADERS. Además, en cada consumo de la API se aclara la instrucción "withCredentials: true" que es esencial para que CORS permita enviar cookies o headers sensibles como el JWT Token.
 
 > Modificamos consulta SQL en endpoint de /ESTADISTICA. Colocamos que devuelva el ID del usuario porque en React se necesita una clave (key) única y estable para cada elemento renderizado en bucles (.map()).
  > Sin el id: React usaría índices como key, lo cual rompe buenas prácticas y puede causar bugs al actualizar listas dinámicas
 
 > Instale la libreria "react-router-dom" con "npm install react-router-dom" en la raíz del proyeto para linkear componentes mediante <a Link to...>.
  > Usar solo <a href=""> recarga la página completa, y eso rompe el flujo de una SPA (Single Page App) como React. En cambio, Link de React Router actualiza la URL y renderiza solo el componente correspondiente sin recargar.
+
+> Modifique el archivo "validateData" dentro del directorio HELPERS del backend en lo que es la validación del nombre del usuario, coloqué que el mínimo de caracteres sea 1 y el máximo 30 (Aclarado en enunciado de /registro con react)
+
+>Instale libreria "jwt-decode" con "npm install jwt-decode" para decodificar el token luego del login y obtener la información del usuario para setear el usuario logueado en la navbar y así acceder al menú especial.
+ > Borrar este comentario
+
+> Agregando el usuariosPagina.length > 0 ? ... : ..., en el StatPage, se evita que el <tbody> contenga nada que no sea un <tr> válido.

@@ -14,6 +14,7 @@ import NavBarComponent from './components/NavBarComponent';
 //Páginas
 import StatPage from './pages/stat/StatPage'
 import RegistroPage from './pages/registro/RegistroPage';
+import LoginPage from './pages/login/LoginPage';
 // import LoginPage from './pages/LoginPage'; // Si tenés login
 // import HomePage from './pages/HomePage'; // Página de inicio opcional
 
@@ -21,34 +22,21 @@ const App = () => {
   const [user, setUser] = useState(null); //Utilizamos estados dinámicos para los valores de variables, base es NULL
   const [loading, setLoading] = useState(true); //Idem usuarios
 
-  useEffect(() => {
-    const usuarioId = localStorage.getItem('usuario'); // por ejemplo: "3"
-    const token = localStorage.getItem('token'); // JWT
+useEffect(() => {
+  const usuarioNombre = localStorage.getItem('usuario');
 
-    if (!usuarioId || !token) {
-      setUser(null); //User = NULL y muestra menú de navegación default
-      setLoading(false); //No carga.
-      return;
-    }
-
-    axios.get(`http://localhost:8000/usuarios/${usuarioId}`, {
-      headers: {
-        Authorization: `Bearer ${token}` //validación del jwt
-      },
-      withCredentials: true // Esto es esencial para que CORS permita enviar cookies o headers sensibles
-    })
-    .then(response => {
-      setUser(response.data); // Supone que la API devuelve los datos del usuario
-    })
-    .catch(error => {
-      console.error('Usuario no autenticado:', error);
-      setUser(null);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
+  if (!usuarioNombre) {
+    console.log('No hay usuarios logueados');
+    setUser(null);
+    setLoading(false);
+    return;
+  } else {
+    console.log('Usuario logueado: ' + usuarioNombre);
+    setUser({ nombre: usuarioNombre }); // NavBar reciba el nombre como objeto
+    setLoading(false);
+  }
   }, []);
-
+  if (loading) return <p>...</p>;
 
   return (
     <BrowserRouter>
@@ -62,8 +50,8 @@ const App = () => {
           <Routes>
             <Route path="/" element={<StatPage />} />
             <Route path="/registro" element={<RegistroPage />} />
-            {/* <Route path="/login" element={<LoginPage />} />
-            <Route path="/home" element={<HomePage />} /> */}
+            <Route path="/login" element={<LoginPage setUser={setUser}/>} />
+            {/*<Route path="/home" element={<HomePage />} /> */}
             {/* Agregá más rutas si tenés otras páginas */}
           </Routes>
         </main>

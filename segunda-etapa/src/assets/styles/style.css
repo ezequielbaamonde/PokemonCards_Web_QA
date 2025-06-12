@@ -31,10 +31,13 @@ html, body, #root {
   border-radius: 20px;
 }
 
+@import url('https://fonts.cdnfonts.com/css/pokemon-solid');
 .encabezado h1 {
   color: white;
   font-size: 2em;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+  font-family: 'Pokemon Solid', sans-serif; /* IMPORTADO */
+  letter-spacing: 7px;
 }
 
 .encabezado img {
