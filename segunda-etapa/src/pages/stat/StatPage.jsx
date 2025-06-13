@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
+import API from "../../utils/axios"
 
 function calcularPromedio(ganadas, total) {
     return total === 0 ? 0 : (ganadas / total) * 100; /*Si total es 0, devuelve 0 para evitar una división por cero.
@@ -17,8 +18,9 @@ function StatPage() {
 
     useEffect(() => {
         setLoading(true);
-        axios.get("http://localhost:8000/estadistica")
+        API.get("/estadistica")
             .then(res => {
+                console.log("res.data:", res.data);
                 const adaptados = res.data.map(u => { /*res.data es el array y la funcion MAP recorre el arreglo. 
                     u toma cada elemento, y ADAPTADOS es el resultado de la función aplicada*/
                     return {

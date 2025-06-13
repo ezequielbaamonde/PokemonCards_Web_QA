@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import API from "../../utils/axios";
 
 // Componente de registro de usuario
 function RegistroPage() {
@@ -31,11 +32,7 @@ function RegistroPage() {
 
     try {
       // Envía los datos al backend para registrar el usuario
-      const response = await axios.post("http://localhost:8000/registro", formData, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      });
+      const response = await API.post("/registro", formData);
 
       // Si el registro fue exitoso
       if (response.status === 201) {
@@ -68,7 +65,7 @@ function RegistroPage() {
         </div>
 
         <div style={{ marginBottom: 12 }}>
-          <label>Nombre de usuario:</label><br />
+          <label>Nombre:</label><br />
           <input
             type="text"
             name="nombre"

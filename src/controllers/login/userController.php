@@ -57,8 +57,10 @@ $app->post('/login', function (Request $request, Response $response) {
         $stmt->execute();
     
         $response->getBody()->write(json_encode([
+            'id_usuario' => $user['id'], // ID del usuario
+            'nombre' => $user['nombre'], // Nombre del usuario, para utilizar en navbar frontend
             'token' => $jwt,
-            'message' => 'Login successful'
+            'message' => 'Inicio de sesión exitoso'
         ]));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
     }else{

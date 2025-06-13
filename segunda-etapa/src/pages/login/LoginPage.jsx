@@ -1,32 +1,35 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API from "../../utils/axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = ({ setUser }) => {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const navigate = useNavigate(); //Redirige al usuario a otra página después del login exitoso.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
 
     try {
-      const response = await axios.post('http://localhost:8000/login', {
+      const response = await API.post('/login', {
         usuario,
         password
-      }, {
-        withCredentials: true
       });
 
-      const { token } = response.data;
-
+      const { token, id_usuario, nombre } = response.data;
+      
       // Guardar el token y el usuario, esto sirve para luego desloguear
       localStorage.setItem('token', token);
-      localStorage.setItem('usuario', usuario); // nombre del usuario, no su ID
+      localStorage.setItem('usuario', usuario); // <---- Guarda el nombre del usuario
+      localStorage.setItem('nombre', nombre); // <---- Guarda el nombre del usuario
+      localStorage.setItem('usuarioId', id_usuario);
+
       // Actualizar el estado global del usuario
-      setUser({ nombre: usuario }); // <---- Un objeto con 'nombre'
+      setUser({ nombre: nombre }); // <---- Un objeto con 'nombre'
+      toast.success(response.data.message); // Mensaje de éxito
       navigate('/'); // Redirige al inicio de manera exitosa
 
     } catch (err) {
@@ -44,7 +47,7 @@ const LoginPage = ({ setUser }) => {
         // Algo pasó al configurar la solicitud
         msg = `Error al configurar la solicitud: ${err.message}`;
       }
-      setError(msg);
+      toast.error(msg);
     }
   };
 
@@ -73,7 +76,6 @@ const LoginPage = ({ setUser }) => {
         </div>
 
         <button type="submit">Ingresar</button>
-        {error && <p style={{ color: "red" }}>{error}</p>}
       </form>
     </div>
   );
