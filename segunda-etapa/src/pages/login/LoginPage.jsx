@@ -52,10 +52,10 @@ const LoginPage = ({ setUser }) => {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 16 }}>
-      <h2>Iniciar Sesión</h2>
+    <div className='form-container'>
+      <h1>Iniciar Sesión</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Usuario:</label><br />
           <input
             type="text"
@@ -65,7 +65,7 @@ const LoginPage = ({ setUser }) => {
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Contraseña:</label><br />
           <input
             type="password"
@@ -74,8 +74,13 @@ const LoginPage = ({ setUser }) => {
             required
           />
         </div>
+        
+        <div className='form-container-div'>
+          <button className="pokemon-button" type="submit">
+            Ingresar
+          </button>
+        </div>
 
-        <button type="submit">Ingresar</button>
       </form>
     </div>
   );

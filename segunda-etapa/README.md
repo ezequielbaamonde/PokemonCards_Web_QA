@@ -25,4 +25,7 @@
 
 > el HOOK "useMemo" ayuda a optimizar el rendimiento evitando cálculos repetidos cuando los datos relevantes no han cambiado.
 
-> Instalamos toastify mediante "npm install react-toastify", libreria de ventanas emergentes.
+> Instalamos toastify mediante "npm install react-toastify", libreria de ventanas emergentes. Lo utilizan endpoints como:
+ > Login
+ > Registro
+ > Update

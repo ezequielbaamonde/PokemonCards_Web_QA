@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+//Api
 import API from "../../utils/axios";
 
 // Componente de registro de usuario
@@ -10,10 +14,6 @@ function RegistroPage() {
     nombre: "",
     password: "",
   });
-
-  // Estado para mensajes de éxito y error
-  const [mensaje, setMensaje] = useState(null);
-  const [error, setError] = useState(null);
 
   // Maneja los cambios en los campos del formulario
   const handleChange = (e) => {
@@ -27,8 +27,6 @@ function RegistroPage() {
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMensaje(null);
-    setError(null);
 
     try {
       // Envía los datos al backend para registrar el usuario
@@ -36,24 +34,24 @@ function RegistroPage() {
 
       // Si el registro fue exitoso
       if (response.status === 201) {
-        setMensaje(response.data.message); // "Usuario creado exitosamente."
+        toast.success(response.data.message);
         setFormData({ usuario: "", nombre: "", password: "" }); // Limpia el formulario
       }
     } catch (err) {
       // Si hay un error del backend, muestra el mensaje correspondiente
       if (err.response && err.response.data && err.response.data.error) {
-        setError(err.response.data.error);
+        toast.error(err.response.data.error);
       } else {
-        setError("Error inesperado. Intenta más tarde.");
+        toast.error("Error inesperado. Intenta más tarde.");
       }
     }
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 16 }}>
-      <h2>Registro de Usuario</h2>
+    <div className='form-container'>
+      <h1>Registro de Usuario</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Usuario (único):</label><br />
           <input
             type="text"
@@ -64,7 +62,7 @@ function RegistroPage() {
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Nombre:</label><br />
           <input
             type="text"
@@ -75,7 +73,7 @@ function RegistroPage() {
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Contraseña:</label><br />
           <input
             type="password"
@@ -86,12 +84,10 @@ function RegistroPage() {
           />
         </div>
 
-        <button type="submit">Registrarse</button>
+        <button className="pokemon-button" type="submit">
+          Registrase
+        </button>
       </form>
-
-      {/* Muestra mensaje de éxito o error */}
-      {mensaje && <p style={{ color: "green" }}>{mensaje}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }

@@ -151,3 +151,50 @@ html, body, #root {
 
   
 }
+
+/* *********forms LOGIN, REGISTRO, UPDATE********* */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 16px;
+}
+
+.form-container-div {
+  margin-bottom: 12px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+.pokemon-button {
+  font-family: 'Press Start 2P', cursive;
+  display: flex;
+  margin: 0 auto;
+  gap: 12px;
+  background: linear-gradient(to bottom, #FF1C1C, #B80000);
+  color: white;
+  border: 4px solid #000000;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 20px;
+  text-shadow: 2px 2px #000000;
+  /* box-shadow: 0 2px #000; */
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+
+}
+
+.pokemon-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px #000;
+}
+
+.pokemon-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px #000;
+}

@@ -148,9 +148,9 @@ $app->get('/perfil', function (Request $request, Response $response) {
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
-// PUT: Actualiza el nombre de usuario y la contraseña de un usuario logueado | Valida token.
+// PUT: Actualiza el nombre de usuario y la contraseña de un ID | Valida token logueado.
 $app->put('/usuarios/{usuario}', function (Request $request, Response $response, array $args) {
-    $usernameParam = $args['usuario'];
+    $userIdParam = $args['usuario'];
     
     $data = $request->getParsedBody();
     $newUsername = $data['nombre'] ?? null;
@@ -159,8 +159,8 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
     // 1. Obtener y validar el token
     $jwt = $request->getAttribute('jwt');
 
-    // 2. Validar que el USUARIO en el token coincida con el de la URL
-    if ($jwt->username !== $usernameParam) {
+    // 2. Validar que el ID USUARIO coincida con el del token
+    if ($jwt->sub != $userIdParam) {
         $response->getBody()->write(json_encode(['error' => 'No autorizado para modificar este usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
@@ -187,8 +187,8 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
     $db = DB::getConnection();
 
     // Verificar si el usuario existe
-    $stmt = $db->prepare("SELECT * FROM usuario WHERE usuario = :username");
-    $stmt->bindParam(':username', $usernameParam);
+    $stmt = $db->prepare("SELECT * FROM usuario WHERE id = :userId");
+    $stmt->bindParam(':userId', $userIdParam);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -198,10 +198,10 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
     }
 
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-    $stmt = $db->prepare("UPDATE usuario SET nombre = :newUsername, password = :newPassword WHERE usuario = :oldUsername");
+    $stmt = $db->prepare("UPDATE usuario SET nombre = :newUsername, password = :newPassword WHERE id = :oldUserId");
     $stmt->bindParam(':newUsername', $newUsername);
     $stmt->bindParam(':newPassword', $hashedPassword);
-    $stmt->bindParam(':oldUsername', $usernameParam);
+    $stmt->bindParam(':oldUserId', $userIdParam);
 
     if ($stmt->execute()) {
         $response->getBody()->write(json_encode([

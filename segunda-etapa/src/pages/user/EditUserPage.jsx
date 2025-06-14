@@ -6,8 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 //Api
 import API from "../../utils/axios";
 
-
-
 const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre en el contexto global
   const [nombre, setNombre] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +13,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
     if (!nombre || !password || !repetirPassword) {
       toast.error('Todos los campos son obligatorios.');
@@ -29,10 +27,10 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
 
     // const usuarioId = localStorage.getItem('usuarioId');
     const token = localStorage.getItem('token');
-    const userLog = localStorage.getItem('usuario'); //el usuario logueado es parametro de la URL
+    const userId = localStorage.getItem('usuarioId'); //ID usuario logueado
 
     try {
-      const response = await API.put(`/usuarios/${userLog}`, { //Se toma el ID del usuario logueado en localStorage
+      const response = await API.put(`/usuarios/${userId}`, { //Se toma el ID del usuario logueado en localStorage
         nombre,
         password
       }, {
@@ -43,19 +41,15 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
       // Si el update fue exitoso
       if (response.status === 200) {
         toast.success(response.data.message); // Mensaje del backend
+
         // Limpiar los campos del formulario
         setNombre('');
         setPassword('');
         setRepetirPassword('');
 
-        // Actualizar localStorage
-        localStorage.setItem('nombre', nombre);
-
-        // Actualizar contexto global para el navbar
-        setUser({ nombre: nombre });
-
-        // Redirigir al inicio
-        navigate('/');
+        localStorage.setItem('nombre', nombre); // Actualizar localStorage
+        setUser({ nombre: nombre });// Actualizar contexto global para el navbar
+        navigate('/');// Redirigir al inicio
       }  
     } catch (err) {
       const backendError = err.response?.data?.error;
@@ -65,10 +59,10 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: 16 }}> 
-      <h2>Editar Usuario '{localStorage.getItem('usuario')}'</h2>{/*userLog*/}
+    <div className='form-container'> 
+      <h1>Editar Usuario '{localStorage.getItem('usuario')}'</h1>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Nuevo nombre</label><br />
           <input
             type="text"
@@ -77,7 +71,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Nueva contraseña</label><br />
           <input
             type="password"
@@ -86,7 +80,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
           />
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div className= 'form-container-div'>
           <label>Repetir contraseña</label><br />
           <input
             type="password"
@@ -96,7 +90,9 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
           />
         </div>
 
-        <button type="submit">Actualizar Usuario</button>
+        <button className="pokemon-button" type="submit">
+          Actualizar
+        </button>
       </form>
     </div>
   );

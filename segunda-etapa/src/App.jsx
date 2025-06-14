@@ -1,8 +1,8 @@
 /* Punto de entrada de la aplicacion que renderiza el componente raíz en el DOM */
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import axios from 'axios'; //Framework para hacer peticiones HTTP
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; //Rutas
+import { ToastContainer } from 'react-toastify'; //Notificaciones emergentes
 
 //Estilos
 import './assets/styles/style.css'
@@ -41,11 +41,11 @@ const App = () => {
   if (loading) return <p>...</p>;
 
   return (
-    <BrowserRouter>
+    <BrowserRouter> {/* Envolvemos la APP con BrowserRouter para el manejo de rutas*/}
       <div className="app-container">
         <header>
-          <HeaderComponent />
-          <NavBarComponent user={user} />
+          <HeaderComponent /> {/* Componente de encabezado */}
+          <NavBarComponent user={user} /> {/* Componente de navegación, le pasamos el usuario logueado para saludo */}
         </header>
 
         <main className="main-content">
@@ -58,7 +58,7 @@ const App = () => {
             {/* Agregá más rutas si tenés otras páginas */}
           </Routes>
         </main>
-        <ToastContainer position="top-right" autoClose={3000} />
+        <ToastContainer position="top-right" autoClose={3000} /> {/* Componente para notificaciones emergentes */}
 
         <footer>
           <FooterComponent />
