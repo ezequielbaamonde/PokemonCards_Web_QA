@@ -18,7 +18,6 @@ createRoot(document.getElementById('root')).render(
    A la hora de la entrega esto se habilita nuevamente para verificar que no haya problemas.
   Esto es útil para detectar problemas potenciales en el código, pero puede ser molesto durante
   el desarrollo si se generan muchos mensajes de advertencia o error.
-
   */
   <App />
 )

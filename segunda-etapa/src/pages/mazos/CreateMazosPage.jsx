@@ -8,6 +8,7 @@ const CreateMazosPage = () => {
   const [nombre, setNombre] = useState('');
   const [cartas, setCartas] = useState([]);
   const [cartasDisponibles, setCartasDisponibles] = useState([]);
+  const [imagenAmpliada, setImagenAmpliada] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -94,6 +95,7 @@ const CreateMazosPage = () => {
               <img
                src={`/Cards/${carta.id}.png`} //Uso backticks ( ` ), para cadenas con variables o expresiones embebidas
                alt={carta.nombre}
+               onClick={() => setImagenAmpliada(`/Cards/${carta.id}.png`)}
                onError={(e) => {
                  e.target.onerror = null;
                  e.target.src = '/Cards/default.png';
@@ -110,6 +112,16 @@ const CreateMazosPage = () => {
               />
             </div>
           ))}
+
+          {/* Mostramos las carta ampliada */}
+          {imagenAmpliada && (
+            <div className="modal-overlay" onClick={() => setImagenAmpliada(null)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}> {/*Evita que el clic en la imagen cierre el modal*/}
+                <img src={imagenAmpliada} alt="Carta ampliada" />
+                <button onClick={() => setImagenAmpliada(null)}>Cerrar</button>
+              </div>
+            </div>
+          )}
         </div>
 
         <button type="submit" className="pokemon-button">
