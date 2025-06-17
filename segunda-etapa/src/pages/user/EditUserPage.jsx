@@ -71,7 +71,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
           />
         </div>
 
-        <div className= 'form-container-div'>
+        <div className='form-container-div'>
           <label>Nueva contraseña</label><br />
           <input
             type="password"
@@ -80,7 +80,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
           />
         </div>
 
-        <div className= 'form-container-div'>
+        <div className='form-container-div'>
           <label>Repetir contraseña</label><br />
           <input
             type="password"

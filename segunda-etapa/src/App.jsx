@@ -17,6 +17,8 @@ import StatPage from './pages/stat/StatPage'
 import RegistroPage from './pages/registro/RegistroPage';
 import LoginPage from './pages/login/LoginPage';
 import EditUserPage from './pages/user/EditUserPage';
+import MazosPage from './pages/mazos/MazosPage'; // Si necesitas la página de mazos
+import CreateMazosPage from './pages/mazos/CreateMazosPage';
 
 
 const App = () => {
@@ -54,7 +56,8 @@ const App = () => {
             <Route path="/register" element={<RegistroPage />} />
             <Route path="/login" element={<LoginPage setUser={setUser}/>} />
             <Route path="/update" element={<EditUserPage setUser={setUser} />} />
-            {/*<Route path="/home" element={<HomePage />} /> */}
+            <Route path="/mis-mazos" element={<MazosPage />}/>
+            *<Route path="/crear-mazo" element={<CreateMazosPage />} />
             {/* Agregá más rutas si tenés otras páginas */}
           </Routes>
         </main>

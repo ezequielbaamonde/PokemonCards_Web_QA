@@ -75,11 +75,10 @@ const LoginPage = ({ setUser }) => {
           />
         </div>
         
-        <div className='form-container-div'>
-          <button className="pokemon-button" type="submit">
-            Ingresar
-          </button>
-        </div>
+        <button className="pokemon-button" type="submit">
+          Ingresar
+        </button>
+        
 
       </form>
     </div>

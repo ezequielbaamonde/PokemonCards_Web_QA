@@ -25,7 +25,7 @@ const NavBarComponent = ({ user }) => {
           <>
             <li><span>Hola, {user.nombre}</span></li>
             <li><a href="/">Inicio</a></li>
-            <li><a href="/mis-mazos">Mis mazos</a></li>
+            <li><Link to="/mis-mazos">Mis mazos</Link></li>
             <li><Link to="/update">Actualizar Usuario</Link></li>
             <li><button onClick={botonLogout}> Logout </button></li>
           </>
