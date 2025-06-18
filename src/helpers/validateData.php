@@ -53,4 +53,3 @@ function validateName(string $name): ?string {
     }
     return null;
 }
-

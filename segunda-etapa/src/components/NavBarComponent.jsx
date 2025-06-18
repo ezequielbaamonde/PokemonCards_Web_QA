@@ -18,7 +18,7 @@ const NavBarComponent = ({ user }) => {
         {!user ? (
           <>
             <li><Link to= "/">Inicio</Link></li>
-            <li><Link to="/register">Registro de usuario</Link></li>
+            <li><Link to="/register">Registrase</Link></li>
             <li><Link to="/login">Login</Link></li>
           </>
         ) : (

@@ -29,3 +29,5 @@
  > Login
  > Registro
  > Update
+
+> Añadi una conidición al endpoint PUT y POST de /mazos para que el nombre del mazo no sea mayor a 20 caracterés

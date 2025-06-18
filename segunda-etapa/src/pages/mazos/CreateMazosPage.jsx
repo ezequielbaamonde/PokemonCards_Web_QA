@@ -1,3 +1,21 @@
+/*
+Para crear un nuevo mazo el usuario deberá completar un formulario con:  
+●  nombre del mazo (máximo de 20 caracteres). 
+●  Listado de todas las cartas disponibles para seleccionar.  
+○  Este listado debe contener las características que den una vista relevante de 
+la carta (nombre, puntos de ataque, atributo, etc). 
+○  La manera en que se muestra el listado, la información de las cartas y su 
+modo de selección queda a su criterio. Por ejemplo, una imagen de la carta 
+junto a un checkbox para seleccionarla. 
+○  El listado podrá filtrarse para reducir la cantidad de cartas que se ven. En la 
+parte superior, debe haber un filtro/buscador con 2 criterios: 
+●  “Atributo” de la carta, 
+●  nombre de la carta, e  
+●  incluir un botón para “limpiar” los filtros. 
+En caso que el usuario ya tenga un máximo de 3 mazos creados, se debe devolver el error 
+correspondiente cuando este quiera guardar el mazo. Idem si ocurre otro error al intentar 
+guardar el mazo. 
+*/
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../utils/axios';
@@ -5,12 +23,17 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CreateMazosPage = () => {
+  //Estados
   const [nombre, setNombre] = useState('');
   const [cartas, setCartas] = useState([]);
   const [cartasDisponibles, setCartasDisponibles] = useState([]);
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
+
+  //Hooks
   const navigate = useNavigate();
+  //Datos
   const token = localStorage.getItem('token');
+  const usuario = localStorage.getItem('usuario');
 
   useEffect(() => {
     obtenerCartas();
@@ -71,7 +94,7 @@ const CreateMazosPage = () => {
 
   return (
     <div className="create-mazo-container">
-      <h2>Crear nuevo mazo</h2>
+      {/* <h2>Crear nuevo mazo</h2> */}
       <form onSubmit={handleSubmit} className="create-mazo-form">
         <label>
           Nombre del mazo:
@@ -101,7 +124,7 @@ const CreateMazosPage = () => {
                  e.target.src = '/Cards/default.png';
                }}
               />
-                
+              
               <h4>{carta.nombre}</h4>
               <p>Atributo: {carta.atributo}</p>
               <p>Ataque: {carta.ataque}<br/>({carta.ataque_nombre})</p>
@@ -114,6 +137,7 @@ const CreateMazosPage = () => {
           ))}
 
           {/* Mostramos las carta ampliada */}
+          {/* Falta realizar dorso default */}
           {imagenAmpliada && (
             <div className="modal-overlay" onClick={() => setImagenAmpliada(null)}>
               <div className="modal-content" onClick={(e) => e.stopPropagation()}> {/*Evita que el clic en la imagen cierre el modal*/}
@@ -124,8 +148,15 @@ const CreateMazosPage = () => {
           )}
         </div>
 
-        <button type="submit" className="pokemon-button">
+        <button type="submit"
+          className="pokemon-button">
           Crear mazo
+        </button>
+
+        <button type="submit"
+          className="pokemon-button-return"
+          onClick={() => navigate('/mis-mazos')}>
+          Volver
         </button>
       </form>
     </div>

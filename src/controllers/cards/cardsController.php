@@ -58,6 +58,12 @@ $app->post('/mazos', function (Request $request, Response $response) {
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
+    // Validar longitud máxima del nombre (Nuevo)
+    if (mb_strlen($nombre) > 20) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre del mazo no puede tener más de 20 caracteres']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+    }
+
     // Crear el mazo
     $stmt = $db->prepare("INSERT INTO mazo (usuario_id, nombre) VALUES (:usuarioId, :nombre)");
     $stmt->bindParam(':usuarioId', $usuarioId);
@@ -201,6 +207,12 @@ $app->put('/mazos/{mazo}', function (Request $request, Response $response, array
     if (!$stmt->fetch()) {
         $response->getBody()->write(json_encode(['error' => 'El mazo no pertenece al usuario']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
+    }
+    
+    // Validar longitud máxima del nombre (Nuevo)
+    if (mb_strlen($nuevoNombre) > 20) {
+        $response->getBody()->write(json_encode(['error' => 'El nombre del mazo no puede tener más de 20 caracteres']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
     // Actualizar el nombre del mazo

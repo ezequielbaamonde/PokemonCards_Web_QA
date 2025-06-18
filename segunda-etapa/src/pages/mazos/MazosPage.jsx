@@ -1,3 +1,18 @@
+/* 
+Un usuario logueado podrá ver sus mazos creados. Para eso se listará el nombre del mazo  
+y 4 opciones:  
+●  Ver Mazo: se muestra en un modal las cartas que lo componen. 
+●  Eliminar: da de baja el mazo seleccionado (siempre que no haya sido previamente 
+usado en una partida). 
+●  Editar: Muestra un pequeño formulario junto a la fila para cambiar el nombre del 
+mazo (puede ser junto a la fila o junto al nombre del mazo). 
+●  Jugar: Enlace a “Jugar” con el mazo seleccionado. 
+La forma en que se muestra la información anterior puede modificarse por una más óptima 
+si así lo considera pero debe permitirle al usuario realizar las acciones descriptas. 
+En la parte inferior o superior debe haber un botón o link para ir al “Alta de nuevo mazo”. Si 
+el usuario ya tiene 3 mazos creados, este botón debe estar deshabilitado.
+*/
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../utils/axios';
@@ -9,6 +24,7 @@ const MazosPage = () => {
   const [mazoSeleccionado, setMazoSeleccionado] = useState(null);
   const [mazoEditandoId, setMazoEditandoId] = useState(null);
   const [nuevoNombre, setNuevoNombre] = useState('');
+  
   const navigate = useNavigate();
 
   const usuario = localStorage.getItem('usuario');
@@ -26,6 +42,9 @@ const MazosPage = () => {
         }
       });
       setMazos(res.data.mazos || []);
+      if (res.data.mazos?.length >= 3) {
+        toast.info('Ya tienes 3 mazos creados. Elimina uno para poder crear otro.');
+      }
     } catch (error) {
       const mensaje = error.response?.data?.mensaje || 'Error al cargar los mazos.';
       toast.error(mensaje);
