@@ -28,6 +28,8 @@ const CreateMazosPage = () => {
   const [cartas, setCartas] = useState([]);
   const [cartasDisponibles, setCartasDisponibles] = useState([]);
   const [imagenAmpliada, setImagenAmpliada] = useState(null);
+  const [filtroAtributo, setFiltroAtributo] = useState('');
+  const [filtroNombre, setFiltroNombre] = useState('');
 
   //Hooks
   const navigate = useNavigate();
@@ -37,17 +39,27 @@ const CreateMazosPage = () => {
 
   useEffect(() => {
     obtenerCartas();
-  }, []);
+  }, [filtroAtributo, filtroNombre]); //Dependencias para que se actualice instanteneamente al cambiar los filtros
 
   const obtenerCartas = async () => {
     try {
       const res = await API.get('/cartas', {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
+        params: {
+          atributo: filtroAtributo,
+          nombre: filtroNombre
+        }
       });
       setCartasDisponibles(res.data);
     } catch (err) {
       toast.error('Error al obtener las cartas');
     }
+  };
+
+  const limpiarFiltros = () => {
+    setFiltroAtributo('');
+    setFiltroNombre('');
+    // obtenerCartas();
   };
    
   /*Seleccionador de cartas
@@ -103,8 +115,29 @@ const CreateMazosPage = () => {
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             className="input-nombre"
+            placeholder='Máximo 20 caracteres'
           />
         </label>
+        
+
+        <div className="filtros-container">
+          <input
+            type="text"
+            placeholder="Buscar por nombre"
+            value={filtroNombre}
+            onChange={(e) => setFiltroNombre(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Buscar por atributo"
+            value={filtroAtributo}
+            onChange={(e) => setFiltroAtributo(e.target.value)}
+          />
+          <button type="button" onClick={limpiarFiltros}>
+            Limpiar filtros
+          </button>
+        </div>
+
 
         <div className="cartas-grid">
           {cartasDisponibles.map((carta) => ( // Aquí mapeamos las cartas disponibles, "carta" es el objeto de cada carta
@@ -152,12 +185,12 @@ const CreateMazosPage = () => {
           className="pokemon-button">
           Crear mazo
         </button>
-
-        <button type="submit"
+        <button type="button"
           className="pokemon-button-return"
           onClick={() => navigate('/mis-mazos')}>
           Volver
         </button>
+
       </form>
     </div>
   );
