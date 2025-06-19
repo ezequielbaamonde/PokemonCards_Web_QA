@@ -182,6 +182,35 @@ $app->get('/usuarios/{usuario}/mazos', function (Request $request, Response $res
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
+/* Lista las cartas que conforma un mazo -> Utilizamos para MODAL de frontend */
+$app->get('/mazos/{id}/cartas', function (Request $request, Response $response, array $args) {
+    $mazoId = $args['id'];
+    $db = DB::getConnection();
+
+    $sql = "SELECT 
+              c.id, 
+              c.nombre, 
+              c.ataque, 
+              c.ataque_nombre, 
+              a.nombre AS atributo 
+            FROM mazo_carta mc
+            INNER JOIN carta c ON mc.carta_id = c.id
+            INNER JOIN atributo a ON c.atributo_id = a.id
+            WHERE mc.mazo_id = :mazoId AND mc.estado = 'en_mazo'";
+
+    $stmt = $db->prepare($sql);
+    $stmt->bindParam(':mazoId', $mazoId, PDO::PARAM_INT);
+    $stmt->execute();
+    $cartas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $response->getBody()->write(json_encode($cartas));
+    return $response->withHeader('Content-Type', 'application/json')
+                    ->withStatus(200);
+})->add($jwtMiddleware);
+
+/*-----------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
+
 /* Cambiar nombre de mazo */
 $app->put('/mazos/{mazo}', function (Request $request, Response $response, array $args) {
     $db = DB::getConnection();

@@ -138,7 +138,6 @@ const CreateMazosPage = () => {
           </button>
         </div>
 
-
         <div className="cartas-grid">
           {cartasDisponibles.map((carta) => ( // Aquí mapeamos las cartas disponibles, "carta" es el objeto de cada carta
             <div

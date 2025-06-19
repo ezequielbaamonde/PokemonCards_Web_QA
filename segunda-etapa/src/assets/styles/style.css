@@ -230,7 +230,7 @@ label{
   text-align: center;
 }
 
-/* Create Mazos Page */
+/* *********Create Mazos Page********* */
 .create-mazo-container {
   max-width: 1000px;
   /*width 10% para más amplitud*/
@@ -326,7 +326,7 @@ label{
   border: 1px solid #007bff;
 }
 
-/* VETNANA MODAL PARA AMPLIACIÓN IMG*/
+/* VENTANA MODAL PARA AMPLIACIÓN de IMAGEN EN CREACIÓN DE MAZOS*/
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -373,6 +373,51 @@ label{
 } 
 
 .modal-content button:hover {
+  background-color: #d32f2f;
+}
+
+/* **************VER MAZO************** */
+/* MODAL DE VER MAZO CON GRILLA DE CARTAS distinto al de crear mazo */
+.modal-cartas {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-cartas h3 {
+  color: #fff;
+  margin-bottom: 20px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.modal-cartas .cartas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  justify-content: center;   /* Esto centra horizontalmente */
+  max-width: 1000px;         /* Limitar ancho */
+  width: 100%;
+}
+
+
+.modal-cartas button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #ef5350;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.modal-cartas button:hover {
   background-color: #d32f2f;
 }
 

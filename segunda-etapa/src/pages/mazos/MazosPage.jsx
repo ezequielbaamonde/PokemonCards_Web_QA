@@ -24,6 +24,7 @@ const MazosPage = () => {
   const [mazoSeleccionado, setMazoSeleccionado] = useState(null);
   const [mazoEditandoId, setMazoEditandoId] = useState(null);
   const [nuevoNombre, setNuevoNombre] = useState('');
+  const [cartasDelMazo, setCartasDelMazo] = useState([]);
   
   const navigate = useNavigate();
 
@@ -91,6 +92,19 @@ const MazosPage = () => {
     }
   };
 
+  const verCartasDelMazo = async (mazo) => {
+  try {
+      const res = await API.get(`/mazos/${mazo.id}/cartas`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCartasDelMazo(res.data);
+      setMazoSeleccionado(mazo);
+    } catch (err) {
+      toast.error('Error al obtener las cartas del mazo');
+    }
+  };
+
+
   return (
     <div className="mazos-container">
       <h2>Mazos de {localStorage.getItem('nombre')}</h2>
@@ -112,7 +126,7 @@ const MazosPage = () => {
           )}
 
           <div className="mazo-botones">
-            <button onClick={() => setMazoSeleccionado(mazo)}>Ver Mazo</button>
+            <button onClick={() => verCartasDelMazo(mazo)}>Ver Mazo</button>
             <button onClick={() => eliminarMazo(mazo.id)}>Eliminar</button>
             <button onClick={() => {
               setMazoEditandoId(mazo.id);
@@ -133,20 +147,43 @@ const MazosPage = () => {
         CREAR MAZO
       </button>
 
+      {/* Si mazoSeleccionado no es null o undefined, entonces mostrar el modal */}
       {mazoSeleccionado && (
-        <div className="modal-overlay" onClick={() => setMazoSeleccionado(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay" onClick={() => { 
+          setMazoSeleccionado(null);
+          setCartasDelMazo([]);
+        }}>
+          <div className="modal-cartas" onClick={(e) => e.stopPropagation()}>
             <h3>{mazoSeleccionado.nombre}</h3>
-            <ul>
-              {mazoSeleccionado.cartas?.length > 0 ? (
-                mazoSeleccionado.cartas.map((carta, i) => (
-                  <li key={i}>{carta.nombre}</li>
-                ))
-              ) : (
-                <li>Este mazo no tiene cartas</li>
-              )}
-            </ul>
-            <button onClick={() => setMazoSeleccionado(null)}>Cerrar</button>
+      
+            {cartasDelMazo.length > 0 ? (
+              <div className="cartas-grid">
+                {cartasDelMazo.map((carta) => (
+                  <div key={carta.id} className="carta-card">
+                    <img
+                      src={`/Cards/${carta.id}.png`}
+                      alt={carta.nombre}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/Cards/default.png';
+                      }}
+                    />
+                    <h4>{carta.nombre}</h4>
+                    <p>Atributo: {carta.atributo}</p>
+                    <p>Ataque: {carta.ataque} ({carta.ataque_nombre})</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: 'white' }}>Este mazo no tiene cartas.</p>
+            )}
+
+            <button onClick={() => {
+              setMazoSeleccionado(null);
+              setCartasDelMazo([]);
+            }}>
+              Cerrar
+            </button>
           </div>
         </div>
       )}
