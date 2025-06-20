@@ -72,7 +72,7 @@ $app->post('/partidas', function (Request $request, Response $response) {
 
 
     // Buscamos las cartas asociadas al mazo
-    //mc es un alias para mazo_carta y c es un alias para carta
+    // mc es un alias para mazo_carta y c es un alias para carta
     // Se hace un INNER JOIN para obtener las cartas que están en el mazo
     $stmt = $db->prepare("
         SELECT c.*

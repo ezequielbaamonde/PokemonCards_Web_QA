@@ -19,7 +19,7 @@ import LoginPage from './pages/login/LoginPage';
 import EditUserPage from './pages/user/EditUserPage';
 import MazosPage from './pages/mazos/MazosPage'; // Si necesitas la página de mazos
 import CreateMazosPage from './pages/mazos/CreateMazosPage';
-
+import GamePage from './pages/game/gamePage';
 
 const App = () => {
   const [user, setUser] = useState(null); //Utilizamos estados dinámicos para los valores de variables, base es NULL
@@ -57,7 +57,8 @@ const App = () => {
             <Route path="/login" element={<LoginPage setUser={setUser}/>} />
             <Route path="/update" element={<EditUserPage setUser={setUser} />} />
             <Route path="/mis-mazos" element={<MazosPage />}/>
-            *<Route path="/crear-mazo" element={<CreateMazosPage />} />
+            <Route path="/crear-mazo" element={<CreateMazosPage />} />
+            <Route path="/jugar/:idMazo" element={<GamePage />} />
             {/* Agregá más rutas si tenés otras páginas */}
           </Routes>
         </main>
