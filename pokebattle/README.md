@@ -33,3 +33,7 @@
 > Se añadió una conidición al endpoint PUT y POST de /mazos para que el nombre del mazo no sea mayor a 20 caracterés
 
 > Se añadió un nuevo endpoint en cardsController "/mazos/{id}/cartas" el cuál devuelve las cartas de un mazo que se le pasa el ID como parametro. Este endpoint se generó para crear el botón "Ver" para los mazos creados por un usuario. Tiene seguridad JWT para que el mazó a visualizar sea el del usuario logueado.
+
+> Se añadió al endpoint /jugadas una consulta SQL que seteé a "en_mazo" las cartas del usuario tras finalizar una partida (5 jugadas). Esto surgió debido a que cuando se finalizaba una partida y el usuario queria volver a ver su mazo no podia porque las cartas estaban descartadas.
+
+> Se modificó el endpoint "'/usuarios/{usuario}/partidas/{partida}/cartas'" para que se obtenga los atributos tanto del usuario que inicializo la partida como la del SERVIDOR (El cual no inicializa la partida), manteniendo la seguridad JWT.

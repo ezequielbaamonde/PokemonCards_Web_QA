@@ -76,11 +76,9 @@ label{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-family: "Lato", sans-serif;  /* IMPORTADO */
-  font-weight: 700; /* IMPORTADO */ 
-  font-style: italic; /* IMPORTADO */
+  gap: 13px;
+  font-size: 15px;
+  font-family: 'Press Start 2P', cursive;
 }
 
 @media (min-width: 600px) {
@@ -108,6 +106,11 @@ label{
   padding: 0;
 }
 
+.navbar-links svg {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
 .navbar-links span {
   color: #00ffcc;
   font-family: 'Press Start 2P', cursive;
@@ -131,6 +134,27 @@ label{
   color: #db0000;
 }
 
+
+.navbar-link-button {
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  letter-spacing: 2px;
+  text-decoration: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+}
+
+.navbar-link-button:hover {
+  text-decoration: none;
+  color: #00d9ff; /* o el color que uses para links activos */
+}
+
 /* Responsive: menú colapsado básico */
 /* Responsive: columna en pantallas pequeñas */
 @media (max-width: 600px) {
@@ -145,8 +169,6 @@ label{
   }
 } 
 
-
-
 /* *********STATPAGE********* */
 @media (max-width: 600px) {
   .statpage-container{
@@ -160,8 +182,6 @@ label{
   .tabla-stat{
     border-collapse: collapse;
   }
-
-  
 }
 
 /* *********forms LOGIN, REGISTRO, UPDATE********* */
@@ -171,9 +191,15 @@ label{
   align-items: center;
   justify-content: center;
   height: 100%;
-  max-width: 400px;
+  max-width: 500px; /*Ancho*/
   margin: auto;
   padding: 16px;
+}
+
+.form-container h1 {
+  font-family: 'Pokemon Solid', sans-serif;
+  letter-spacing: 5px;
+  text-shadow: rgb(163, 1, 1) 1px 0 10px;
 }
 
 .form-container-div {
@@ -182,6 +208,16 @@ label{
   font-size: 20px;
 }
 
+.form-container-div input{
+  font-size: 20px;
+}
+
+.form-container-div input[type=text]:focus,
+.form-container-div input[type=password]:focus{
+  background-color: rgba(255, 204, 0, 0.288);
+}
+
+
 /* ********* MAZOS PAGE ********* */
 .mazos-container {
   max-width: 600px;
@@ -189,8 +225,15 @@ label{
   padding: 16px;
 }
 
+.mazos-container h2{
+  font-family: 'Pokemon Solid', sans-serif;
+  letter-spacing: 5.5px;
+  text-shadow: #fc0 1px 0 10px;
+}
+
 .mazo-card {
-  border: 1px solid #ccc;
+  background-color: rgba(0, 0, 0, 0.144) ;
+  border: 2px solid #ccc;
   padding: 12px;
   margin-bottom: 12px;
   border-radius: 8px;
@@ -198,6 +241,10 @@ label{
 
 .mazo-nombre {
   margin: 0;
+  letter-spacing: 2px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  text-shadow: rgb(192, 16, 3) 1px 0 10px;
 }
 
 .mazo-botones {
@@ -205,12 +252,35 @@ label{
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 8px;
+  
 }
 
 .mazo-edicion {
   display: flex;
   gap: 8px;
   margin-top: 8px;
+}
+
+.mazo-botones button{
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: 2px;
+  font-size: 15px;
+  opacity: 1.0;
+  transition-duration: 0.4s;
+  
+}
+.mazo-edicion button{
+  cursor: pointer;
+  align-items: center;
+  letter-spacing: 2px;
+  font-size: 15px;
+  transition-duration: 0.4s;
+}
+.mazo-botones button:hover,
+.mazo-edicion button:hover{
+  background-color: #00ffcc50;
+  transform: scale(1.1);
 }
 
 .boton-crear {
@@ -494,6 +564,11 @@ label{
   box-shadow: 0 0 15px #000;
 }
 
+.tablero-juego h2 {
+  font-family: 'Pokemon Solid', sans-serif;
+  letter-spacing: 5px;
+}
+
 /* === CARTAS DEL SERVIDOR (ARRIBA Y PEQUEÑAS) === */
 .cartas-servidor {
   display: flex;
@@ -514,7 +589,7 @@ label{
 }
 
 .carta-servidor img {
-  width: 80px;
+  width: 120px;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
@@ -542,8 +617,11 @@ label{
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-.cartas-usuario h3{
+.cartas-usuario h3,
+.cartas-servidor h3{
   font-family: 'Press Start 2P', cursive;
+  letter-spacing: 5px;
+  margin-right: 10px;
 }
 
 .carta-jugador {
@@ -602,4 +680,25 @@ label{
   border: none;
   margin: 20px 0;
   border-radius: 4px;
+}
+
+/* DESAPARECER CARTA SV */
+@keyframes desaparecerCarta {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+}
+
+.carta-servidor {
+  transition: all 0.4s ease;
+  opacity: 1;
+}
+
+.carta-servidor.eliminando {
+  animation: desaparecerCarta 0.4s forwards;
 }

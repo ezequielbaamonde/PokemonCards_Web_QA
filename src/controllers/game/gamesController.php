@@ -249,6 +249,15 @@ $app->post('/jugadas', function (Request $request, Response $response) {
             WHERE mazo_id IN (SELECT id FROM mazo WHERE usuario_id = 1)
         ");
         $stmt->execute();
+
+        // Reiniciar el mazo del jugador
+        $stmt = $db->prepare("
+            UPDATE mazo_carta 
+            SET estado = 'en_mazo' 
+            WHERE mazo_id = :mazoJugador
+        ");
+        $stmt->bindParam(':mazoJugador', $partida['mazo_id']);
+        $stmt->execute();
     }
 
     $response->getBody()->write(json_encode($data));
@@ -266,27 +275,44 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', function (Request $re
     $idUsuario = (int) $args['usuario']; //id usuario
     $idPartida = (int) $args['partida'];
 
-    // Validar que el usuario en el token sea el mismo del path o que sea el servidor
+    // Obtener el JWT del middleware
     $jwt = $request->getAttribute('jwt');
-    
-    if ($jwt->sub !== $idUsuario && $jwt->sub !== 1) {
+    $idToken = $jwt->sub;
+
+     // Validar acceso: si no es el servidor, debe ser el mismo del token
+    if ($idUsuario !== 1 && $idToken !== $idUsuario) {
         $response->getBody()->write(json_encode(['error' => 'Acceso no autorizado']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
 
-    // Obtener el mazo usado por el usuario en la partida
-    $stmt = $db->prepare("SELECT mazo_id FROM partida WHERE id = :idPartida AND usuario_id = :idUsuario");
-    $stmt->bindParam(':idPartida', $idPartida);
-    $stmt->bindParam(':idUsuario', $idUsuario);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Obtener el mazo asociado
+    if ($idUsuario === 1) {
+        // Es el servidor, tomar cualquier mazo del usuario_id 1
+        $stmt = $db->prepare("SELECT id FROM mazo WHERE usuario_id = 1 LIMIT 1");
+        $stmt->execute();
+        $mazoServidor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$result) {
-        $response->getBody()->write(json_encode(['error' => 'Partida no encontrada o no pertenece al usuario']));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        if (!$mazoServidor) {
+            $response->getBody()->write(json_encode(['error' => 'Mazo del servidor no encontrado']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+
+        $idMazo = $mazoServidor['id'];
+
+    } else {
+        // Es un usuario común, obtener su mazo en la partida
+        $stmt = $db->prepare("SELECT mazo_id FROM partida WHERE id = :idPartida AND usuario_id = :idUsuario");
+        $stmt->bindParam(':idPartida', $idPartida);
+        $stmt->bindParam(':idUsuario', $idUsuario);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            $response->getBody()->write(json_encode(['error' => 'Partida no encontrada o no pertenece al usuario']));
+            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+        }
+        $idMazo = $result['mazo_id'];
     }
-
-    $idMazo = $result['mazo_id'];
 
     // Obtener los atributos de las cartas en mano
     //El distinct es para eliminar las filas donde se repite el atributo.
@@ -295,7 +321,7 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', function (Request $re
         FROM mazo_carta mc
         JOIN carta c ON mc.carta_id = c.id
         JOIN atributo a ON c.atributo_id = a.id
-        WHERE mc.mazo_id = :idMazo AND mc.estado = 'en_mano'
+        WHERE mc.mazo_id = :idMazo
     ");
 
     $stmt->bindParam(':idMazo', $idMazo);
@@ -304,7 +330,7 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', function (Request $re
 
     $response->getBody()->write(json_encode(['atributos' => $atributos]));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
-})->add($jwtMiddleware);
+})-> add($jwtMiddleware);
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/

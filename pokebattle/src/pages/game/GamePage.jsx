@@ -11,6 +11,7 @@ const GamePage = () => {
   const [idPartida, setIdPartida] = useState(null);
   // const idPartidaRef = useRef(null); useRef para mantener el ID de la partida sin re-renderizar
   const [loading, setLoading] = useState(true);
+  const [indexCartaEliminando, setIndexCartaEliminando] = useState(null);
 
   const { idMazo } = useParams();
   const navigate = useNavigate();
@@ -22,6 +23,29 @@ const GamePage = () => {
     crearPartida();
   }, []);
 
+
+  const obtenerAtributosServidor = async (idPartidaReal) => {
+    try {
+      const res = await API.get(`/usuarios/1/partidas/${idPartidaReal}/cartas`,{
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const atributos = res.data.atributos || [];
+
+      // Simulamos 5 cartas con esos atributos
+      const cartasFake = Array.from({ length: 5 }, (_, i) => ({
+        id: i + 1,
+        nombre: atributos[i % atributos.length]?.nombre || 'Desconocido',
+      }));
+
+      setCartasServidor(cartasFake);
+    } catch (err) {
+      console.error('Error obteniendo atributos del servidor:', err);
+      toast.error('No se pudieron cargar las cartas del servidor');
+    }
+  };
 
   const crearPartida = async () => {
     console.log('ID del mazo recibido:', idMazo);
@@ -35,11 +59,14 @@ const GamePage = () => {
       );
       console.log('Respuesta del servidor:', res.data);
 
-      // idPartidaRef.current = res.data.id_partida; Guarda directamente el ID en ref
       setIdPartida(res.data.id_partida);
       setCartasJugador(res.data.cartas || []);
-       //obtenerCartasServidor(res.data.id_partida); Opcional, si tenés esa lógica
+
+      // Obtener atributos reales del servidor
+      await obtenerAtributosServidor(res.data.id_partida);
+
       toast.success(res.data?.message || 'Partida creada exitosamente');
+
     } catch (err) {
       console.error('Error creando partida:', err);
       toast.error(err.response?.data?.error || 'No se pudo crear la partida');
@@ -60,14 +87,27 @@ const GamePage = () => {
         '/jugadas',
         {
           id_partida: idPartida,
-          id_carta: idCarta
+          id_carta: idCarta,
         },
         {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       setCartasJugador((prev) => prev.filter((c) => c.id !== idCarta));
+
+      const indexAEliminar = Math.floor(Math.random() * cartasServidor.length);
+      setIndexCartaEliminando(indexAEliminar);
+
+      setTimeout(() => {
+        setCartasServidor((prev) => {
+          const nuevas = [...prev];
+          nuevas.splice(indexAEliminar, 1);
+          return nuevas;
+        });
+        setIndexCartaEliminando(null);
+      }, 400);
+
       setResultadoJugada(res.data);
     } catch (err) {
       console.error('Error al jugar carta:', err);
@@ -82,8 +122,6 @@ const GamePage = () => {
     setCartasJugador([]);
     await crearPartida();
   };
-
-
   /* 
     toast.info esta modifica el estado global de React mientras el componente se está renderizando.
     React detecta eso como un side effect mal ubicado, porque los side effects (como mostrar toasts, hacer fetch, etc.)
@@ -100,9 +138,12 @@ const GamePage = () => {
         <div className="cartas-servidor">
           <h3>Cartas del servidor</h3>
           {cartasServidor.map((carta, i) => (
-            <div key={i} className="carta-servidor">
-              <img src="/Cards/defaultp.png" alt="Carta oculta" />
-              <p>Atributo: {carta.nombre}</p>
+            <div
+              key={i}
+              className={`carta-servidor ${indexCartaEliminando === i ? 'eliminando' : ''}`}
+            >
+              <img src="/Cards/default.png" alt="Carta oculta" />
+              <p>{carta.nombre}</p> {/* Nombre atributp */}
             </div>
           ))}
         </div>

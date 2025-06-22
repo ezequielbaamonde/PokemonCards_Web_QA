@@ -137,7 +137,7 @@ const MazosPage = () => {
         disabled={mazos.length >= 3}
         className="pokemon-button"
       >
-        CREAR MAZO
+        Crear Mazo
       </button>
 
       {/* Si mazoSeleccionado no es null o undefined, entonces mostrar el modal */}

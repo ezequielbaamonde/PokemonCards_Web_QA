@@ -7,7 +7,7 @@ function FooterComponent() {
       <footer className="footer">
         <div className="footer-content">
           <p>Proyecto realizado por: Ezequiel Baamonde</p>
-          <p>© 2025</p>
+          <p>© UNLP 2025</p>
         </div>
       </footer>
     </>

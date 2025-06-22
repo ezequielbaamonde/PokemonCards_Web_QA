@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'; //Importante
-//import './App.css'
+import { Link } from 'react-router-dom';
+import { FaHome, FaUserEdit, FaSignOutAlt, FaThList, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 
 const NavBarComponent = ({ user }) => {
   const botonLogout = () => {
@@ -17,17 +17,17 @@ const NavBarComponent = ({ user }) => {
 
         {!user ? (
           <>
-            <li><Link to= "/">Inicio</Link></li>
-            <li><Link to="/register">Registrarse</Link></li>
-            <li><Link to="/login">Login</Link></li>
+            <li><Link to= "/"><FaHome />Inicio</Link></li>
+            <li><Link to="/register"><FaUserPlus />Registrarse</Link></li>
+            <li><Link to="/login"><FaSignInAlt />Login</Link></li>
           </>
         ) : (
           <>
             <li><span>Hola, {user.nombre}</span></li>
-            <li><a href="/">Inicio</a></li>
-            <li><Link to="/mis-mazos">Mis mazos</Link></li>
-            <li><Link to="/update">Actualizar Usuario</Link></li>
-            <li><button onClick={botonLogout}> Logout </button></li>
+            <li><Link to= "/"><FaHome /> Inicio</Link></li>
+            <li><Link to="/mis-mazos"><FaThList />Mis mazos</Link></li>
+            <li><Link to="/update"><FaUserEdit />Actualizar Usuario</Link></li>
+            <li><button className="navbar-link-button" onClick={botonLogout}><FaSignOutAlt /> Logout </button></li>
           </>
         )}
       </ul>
