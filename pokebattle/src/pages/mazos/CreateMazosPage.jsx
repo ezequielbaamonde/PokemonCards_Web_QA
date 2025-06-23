@@ -66,12 +66,22 @@ const CreateMazosPage = () => {
     Se maneja el cambio de estado de las cartas seleccionadas*/
   const handleCheckboxChange = (id) => {
     setCartas((prev) => { //Prev es es simplemente el valor anterior del estado cartas antes de la actualización.
+
       if (prev.includes(id)) { // Verifica si la carta ya está seleccionada
+        const sonido = new Audio('/Sounds/de-select.mp3');
+        sonido.play().catch(err => console.warn('No se pudo reproducir sonido:', err));
+
         return prev.filter((c) => c !== id); // Elimina la carta si ya está seleccionada
       } else if (prev.length < 5) { //Si el array tiene menos de 5 cartas
+        const sonido = new Audio('/Sounds/select.mp3');
+        sonido.play().catch(err => console.warn('No se pudo reproducir el sonido:', err));
+
         return [...prev, id];
       } else {
         toast.warn('Solo se puede seleccionar 5 cartas');
+        const sonido = new Audio('/Sounds/error.mp3');
+        sonido.play().catch(err => console.warn('No se pudo reproducir sonido:', err));
+
         return prev;
       }
     });
@@ -82,11 +92,15 @@ const CreateMazosPage = () => {
 
     if (!nombre.trim()) {
       toast.error('El nombre del mazo no puede estar vacío');
+      const sonido = new Audio('/Sounds/error.mp3');
+      sonido.play().catch(err => console.warn('No se pudo reproducir sonido:', err));
       return;
     }
 
     if (cartas.length !== 5) {
       toast.error('Se debe seleccionar exactamente 5 cartas');
+      const sonido = new Audio('/Sounds/error.mp3');
+      sonido.play().catch(err => console.warn('No se pudo reproducir sonido:', err));
       return;
     }
 
@@ -97,6 +111,10 @@ const CreateMazosPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('Mazo creado exitosamente');
+      
+      const sonido = new Audio('/Sounds/confirm.mp3');
+      sonido.play().catch(err => console.warn('No se pudo reproducir sonido:', err));  
+
       navigate('/mis-mazos');
     } catch (err) {
       const msg = err.response?.data?.error || 'Error al crear el mazo';

@@ -52,18 +52,19 @@ const App = () => {
 
         <main className="main-content">
           <Routes>
-            <Route path="/" element={<StatPage />} />
+            <Route path="/" element={<StatPage />} /> {/* INICIO */}
             <Route path="/register" element={<RegistroPage />} />
             <Route path="/login" element={<LoginPage setUser={setUser}/>} />
             <Route path="/update" element={<EditUserPage setUser={setUser} />} />
             <Route path="/mis-mazos" element={<MazosPage />}/>
             <Route path="/crear-mazo" element={<CreateMazosPage />} />
             <Route path="/jugar/:idMazo" element={<GamePage />} />
-            {/* Agregá más rutas si tenés otras páginas */}
+            {/* Se agregán más más rutas si existen otras páginas */}
           </Routes>
         </main>
+        
         <ToastContainer position="top-right" autoClose={3000} /> {/* Componente para notificaciones emergentes */}
-
+        
         <footer>
           <FooterComponent />
         </footer>

@@ -1,10 +1,7 @@
 import { useState } from 'react'
-//import './App.css'
 
 function HeaderComponent() {
   const logo = "./././public/logo.png";
-
-  
   return (
     <>
         <div className='encabezado'>
@@ -16,5 +13,4 @@ function HeaderComponent() {
     </>
   )
 }
-
 export default HeaderComponent

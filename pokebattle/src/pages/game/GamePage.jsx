@@ -5,26 +5,32 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const GamePage = () => {
+  //Estados iniciales
   const [cartasJugador, setCartasJugador] = useState([]);
   const [cartasServidor, setCartasServidor] = useState([]);
   const [resultadoJugada, setResultadoJugada] = useState(null);
   const [idPartida, setIdPartida] = useState(null);
-  // const idPartidaRef = useRef(null); useRef para mantener el ID de la partida sin re-renderizar
   const [loading, setLoading] = useState(true);
   const [indexCartaEliminando, setIndexCartaEliminando] = useState(null);
-
   const { idMazo } = useParams();
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
+  //Cargamos la partida al iniciar el componente
   useEffect(() => {
+    //Reproducir sonido al INICIAR partida
+    const sonido = new Audio('/Sounds/Inicio.mp3');
+      sonido.play().catch(e => {
+      console.warn('No se pudo reproducir el sonido automáticamente:', e);
+    });
     toast.info('Cargando partida...');
     crearPartida();
   }, []);
 
 
   const obtenerAtributosServidor = async (idPartidaReal) => {
+    //El SV siempre tiene ID 1
     try {
       const res = await API.get(`/usuarios/1/partidas/${idPartidaReal}/cartas`,{
         headers: {
@@ -34,7 +40,7 @@ const GamePage = () => {
 
       const atributos = res.data.atributos || [];
 
-      // Simulamos 5 cartas con esos atributos
+      // Simulamos 5 cartas con esos atributos para la visual
       const cartasFake = Array.from({ length: 5 }, (_, i) => ({
         id: i + 1,
         nombre: atributos[i % atributos.length]?.nombre || 'Desconocido',
@@ -59,14 +65,13 @@ const GamePage = () => {
       );
       console.log('Respuesta del servidor:', res.data);
 
-      setIdPartida(res.data.id_partida);
+      setIdPartida(res.data.id_partida); //Seteamos idPartida creada
       setCartasJugador(res.data.cartas || []);
 
       // Obtener atributos reales del servidor
       await obtenerAtributosServidor(res.data.id_partida);
 
       toast.success(res.data?.message || 'Partida creada exitosamente');
-
     } catch (err) {
       console.error('Error creando partida:', err);
       toast.error(err.response?.data?.error || 'No se pudo crear la partida');
@@ -80,7 +85,13 @@ const GamePage = () => {
     if (!idPartida) {
       toast.error('La partida aún no fue cargada completamente.');
       return;
-    }
+    } //Si no existe partida
+
+    //Reproducir sonido al jugar carta
+    const sonido = new Audio('/Sounds/Jugada.mp3');
+      sonido.play().catch(e => {
+      console.warn('No se pudo reproducir el sonido:', e);
+    });
 
     try {
       const res = await API.post(
@@ -94,9 +105,9 @@ const GamePage = () => {
         }
       );
 
-      setCartasJugador((prev) => prev.filter((c) => c.id !== idCarta));
+      setCartasJugador((prev) => prev.filter((c) => c.id !== idCarta)); //Corrobora estado previo
 
-      const indexAEliminar = Math.floor(Math.random() * cartasServidor.length);
+      const indexAEliminar = Math.floor(Math.random() * cartasServidor.length); // Elimina una carta fake aleatoria del sv
       setIndexCartaEliminando(indexAEliminar);
 
       setTimeout(() => {
@@ -109,6 +120,24 @@ const GamePage = () => {
       }, 400);
 
       setResultadoJugada(res.data);
+      //Si hay resultado final, reproducir sonido correspondiente
+      if (res.data.resultado_final) {
+        let sonidoFinal;
+
+        if (res.data.resultado_final.includes('Usuario ganó')) {
+          sonidoFinal = new Audio('/Sounds/victoria.mp3');
+        } else if (res.data.resultado_final.includes('Servidor ganó')) {
+          sonidoFinal = new Audio('/Sounds/derrota.mp3');
+        } else if (res.data.resultado_final.includes('empate')) {
+          sonidoFinal = new Audio('/Sounds/empate.mp3');
+        }
+      
+        if (sonidoFinal) {
+          sonidoFinal.play().catch(e => {
+            console.warn('No se pudo reproducir el sonido final:', e);
+          });
+        }
+      }
     } catch (err) {
       console.error('Error al jugar carta:', err);
       toast.error(err.response?.data?.error || 'Error al jugar carta');

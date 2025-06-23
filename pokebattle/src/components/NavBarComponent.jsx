@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
+
+/* Utilizamos react-icons para los íconos de la navbar */
 import { FaHome, FaUserEdit, FaSignOutAlt, FaThList, FaUserPlus, FaSignInAlt } from 'react-icons/fa';
 
 const NavBarComponent = ({ user }) => {
@@ -14,7 +16,6 @@ const NavBarComponent = ({ user }) => {
   return (
     <nav className="navbar">
       <ul className="navbar-links">
-
         {!user ? (
           <>
             <li><Link to= "/"><FaHome />Inicio</Link></li>
