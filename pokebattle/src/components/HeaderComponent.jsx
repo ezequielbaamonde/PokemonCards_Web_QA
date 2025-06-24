@@ -1,7 +1,6 @@
 import { useState } from 'react'
-
 function HeaderComponent() {
-  const logo = "./././public/logo.png";
+  const logo ='/logo.png';
   return (
     <>
         <div className='encabezado'>
