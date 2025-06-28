@@ -1,12 +1,13 @@
 import { useState } from 'react'
+import icono from '../assets/images/logo.png'
+
 function HeaderComponent() {
-  const logo ='/logo.png';
   return (
     <>
         <div className='encabezado'>
           <a href="/" className="logo-link">
             <h1>PokeWeb Cards</h1>
-            <img src={logo} alt="logo.png" />
+            <img src={icono} alt="logo.png" />
           </a>
         </div>
     </>

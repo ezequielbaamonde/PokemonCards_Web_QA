@@ -24,12 +24,16 @@ const GamePage = () => {
       sonido.play().catch(e => {
       console.warn('No se pudo reproducir el sonido automáticamente:', e);
     });
+
     toast.info('Cargando partida...');
-    crearPartida();
+    //Válidamos si hay paritda en curso.
+    (async () => {
+      const retomada = await verificarPartidaEnCurso();
+      if (!retomada) await crearPartida();
+    })();
   }, []);
 
-
-  const obtenerAtributosServidor = async (idPartidaReal) => {
+  const obtenerAtributosServidor = async (idPartidaReal, cantCartas) => {
     //El SV siempre tiene ID 1
     try {
       const res = await API.get(`/usuarios/1/partidas/${idPartidaReal}/cartas`,{
@@ -39,9 +43,8 @@ const GamePage = () => {
       });
 
       const atributos = res.data.atributos || [];
-
-      // Simulamos 5 cartas con esos atributos para la visual
-      const cartasFake = Array.from({ length: 5 }, (_, i) => ({
+      // Simulamos la cantidad de cartas que tenga el usuario para el servidor con los atributos, para "la visual"
+      const cartasFake = Array.from({ length: cantCartas }, (_, i) => ({
         id: i + 1,
         nombre: atributos[i % atributos.length]?.nombre || 'Desconocido',
       }));
@@ -52,6 +55,32 @@ const GamePage = () => {
       toast.error('No se pudieron cargar las cartas del servidor');
     }
   };
+
+  const verificarPartidaEnCurso = async () => {
+    try {
+      const res = await API.get('/partidas/en-curso', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+       //Encontró partida
+      if (res.status === 200) {
+        const cartas = res.data.cartas; //usá la cantidad real que ya se tiene sin que sea inmediato
+        toast.info(res.data.message); //Devuelve mensaje
+        setIdPartida(res.data.id_partida); //Establecemos id_partida
+        setCartasJugador(cartas); //Seteamos las cartas restantes del jugador
+        await obtenerAtributosServidor(res.data.id_partida, cartas.length); //Obtenemos atributos del SV y cartas fakes
+        setLoading(false);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      // 204 = No content (sin partida en curso)
+      if (err.response?.status !== 204) {
+        toast.error('Error consultando partida en curso');
+      }
+      return false;
+    }
+  };  
 
   const crearPartida = async () => {
     console.log('ID del mazo recibido:', idMazo);
@@ -65,11 +94,12 @@ const GamePage = () => {
       );
       console.log('Respuesta del servidor:', res.data);
 
+      const cartas = res.data.cartas || []; //usá la cantidad real que ya se tiene sin que sea inmediato
       setIdPartida(res.data.id_partida); //Seteamos idPartida creada
-      setCartasJugador(res.data.cartas || []);
+      setCartasJugador(cartas);
 
       // Obtener atributos reales del servidor
-      await obtenerAtributosServidor(res.data.id_partida);
+      await obtenerAtributosServidor(res.data.id_partida, cartas.length);
 
       toast.success(res.data?.message || 'Partida creada exitosamente');
     } catch (err) {

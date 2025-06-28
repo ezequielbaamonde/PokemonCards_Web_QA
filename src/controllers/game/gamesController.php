@@ -36,6 +36,40 @@ $app->post('/partidas', function (Request $request, Response $response) {
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
 
+    // Verificar si el usuario ya tiene una partida en curso
+    $stmt = $db->prepare("
+        SELECT id FROM partida
+        WHERE usuario_id = :idUsuario AND estado = 'en_curso'
+        LIMIT 1
+    ");
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    $stmt->execute();
+    $partidaEnCurso = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($partidaEnCurso) {
+        $response->getBody()->write(json_encode([
+            'error' => 'Ya tenés una partida en curso. Debés finalizarla antes de iniciar una nueva.'
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(409);
+    }
+
+    // Verificar si el servidor ya tiene cartas en mano (por lo tanto, hay una partida en curso)
+    $stmt = $db->prepare("
+        SELECT COUNT(*) FROM mazo_carta mc
+        INNER JOIN mazo m ON mc.mazo_id = m.id
+        WHERE m.usuario_id = 1 AND mc.estado = 'en_mano'
+    ");
+    $stmt->execute();
+    $cartasEnManoServidor = (int) $stmt->fetchColumn();
+
+    if ($cartasEnManoServidor > 0) {
+        $response->getBody()->write(json_encode([
+            'error' => 'Ya hay una partida en curso con el servidor. Esperá a que finalice para iniciar una nueva.'
+        ]));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(409); // 409 Conflict
+    }
+
+
     $fechaCreacion = (new DateTime('now', new DateTimeZone('America/Argentina/Buenos_Aires')))->format('Y-m-d H:i:s');
     $estado = 'en_curso';
     $now = '-';
@@ -78,7 +112,7 @@ $app->post('/partidas', function (Request $request, Response $response) {
         SELECT c.*
         FROM mazo_carta mc
         INNER JOIN carta c ON mc.carta_id = c.id
-        WHERE mc.mazo_id = :idMazo
+        WHERE mc.mazo_id = :idMazo AND mc.estado = 'en_mano'
     ");
     $stmt->bindParam(':idMazo', $idMazo);
     $stmt->execute();
@@ -91,6 +125,53 @@ $app->post('/partidas', function (Request $request, Response $response) {
     ]));
     return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
 })->add($jwtMiddleware); // Middleware para verificar el JWT y que el usuario se haya logeado correctamente
+
+/*-----------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
+
+// Obtener la partida en curso del usuario logueado mediante token JWT
+$app->get('/partidas/en-curso', function (Request $request, Response $response) {
+    $db = DB::getConnection();
+    $jwt = $request->getAttribute('jwt');
+    $idUsuario = $jwt->sub;
+
+    $stmt = $db->prepare("
+        SELECT p.id AS id_partida, p.mazo_id, c.*
+        FROM partida p
+        INNER JOIN mazo_carta mc ON mc.mazo_id = p.mazo_id
+        INNER JOIN carta c ON mc.carta_id = c.id
+        WHERE p.usuario_id = :idUsuario 
+          AND p.estado = 'en_curso'
+          AND mc.estado = 'en_mano'
+    ");
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    $stmt->execute();
+    $cartas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$cartas) {
+        $response->getBody()->write(json_encode(['message' => 'No hay partidas en curso']));
+        return $response->withHeader('Content-Type', 'application/json')->withStatus(204); //No hay contenido
+    }
+
+    // Obtener el ID de la partida y mazo (de la primera fila -LIMIT 1-)
+    $stmt = $db->prepare("
+        SELECT id AS id_partida, mazo_id
+        FROM partida
+        WHERE usuario_id = :idUsuario AND estado = 'en_curso'
+        LIMIT 1
+    ");
+    $stmt->bindParam(':idUsuario', $idUsuario);
+    $stmt->execute();
+    $partida = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $response->getBody()->write(json_encode([
+        'message' => 'Se encontró una partida en curso. Se debe finalizar antes de iniciar una nueva.',
+        'id_partida' => $partida['id_partida'],
+        'mazo_id' => $partida['mazo_id'],
+        'cartas' => $cartas
+    ]));
+    return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+})->add($jwtMiddleware);
 
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
@@ -322,7 +403,10 @@ $app->get('/usuarios/{usuario}/partidas/{partida}/cartas', function (Request $re
         JOIN carta c ON mc.carta_id = c.id
         JOIN atributo a ON c.atributo_id = a.id
         WHERE mc.mazo_id = :idMazo
+        AND mc.estado = 'en_mano'   
     ");
+
+ 
 
     $stmt->bindParam(':idMazo', $idMazo);
     $stmt->execute();

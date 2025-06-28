@@ -200,6 +200,7 @@ label{
   font-family: 'Pokemon Solid', sans-serif;
   letter-spacing: 5px;
   text-shadow: rgb(163, 1, 1) 1px 0 10px;
+  text-align: center;
 }
 
 .form-container-div {
@@ -237,6 +238,13 @@ label{
   padding: 12px;
   margin-bottom: 12px;
   border-radius: 8px;
+}
+
+.mazo-card.sin-mazos {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px dashed #aaa;
+  text-align: center;
+  padding: 20px;
 }
 
 .mazo-nombre {
@@ -536,7 +544,7 @@ label{
 /* JUGAR */
 /* === CONTENEDOR PRINCIPAL === */
 .game-page {
-  background-image: url('/tablero2.jpg'); /*Imagen de fondo*/
+  background-image: url('../images/tablero2.jpg'); /*Imagen de fondo*/
   background-size: cover;
   background-position: center;
   padding: 20px;

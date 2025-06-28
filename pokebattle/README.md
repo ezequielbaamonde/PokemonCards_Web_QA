@@ -26,10 +26,16 @@
 
 > Se modificó el endpoint "'/usuarios/{usuario}/partidas/{partida}/cartas'" para que se obtenga los atributos tanto del usuario que inicializo la partida como la del SERVIDOR (El cual no inicializa la partida), manteniendo la seguridad JWT.
 
+> Se modificó el endpoint "/partidas" para que se valide si un usuario o el servidor ya cuentan con una partida en curso. En caso de ser así se retorna un error.
+
+> Se creo el endpoint "/partidas/en-curso" para válidar si el usuario logueado cuenta con una partida en curso y en caso de ser así retornar el id_partida, el mazo_id, las cartas en juego y un mensaje. En caso de que no, retorna un error similar al endpoint de "/partidas".
+
 ## Notaciones de Código.
 > Agregando el usuariosPagina.length > 0 ? ... : ..., en el StatPage, se evita que el <tbody> contenga nada que no sea un <tr> válido.
 
 > El HOOK "useMemo" ayuda a optimizar el rendimiento evitando cálculos repetidos cuando los datos relevantes no han cambiado.
+
+> A la web se le importó fuentes mediante "fonts.googleapis" para encabezados y párrafos. Puede suceder (Desconozco exactamente el mótivo) que en alguna otra PC no se reflejen, lo he probado al clonar el repositorio del proyecto desde github.
 
 ## Librerias Instaladas.
 > Se instaló la libreria "react-router-dom" con "npm install react-router-dom" en la raíz del proyeto para linkear componentes mediante <a Link to...>.

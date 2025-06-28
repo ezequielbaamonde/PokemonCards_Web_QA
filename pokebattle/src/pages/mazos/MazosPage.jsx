@@ -1,11 +1,3 @@
-/* 
-●  Jugar: Enlace a “Jugar” con el mazo seleccionado. 
-La forma en que se muestra la información anterior puede modificarse por una más óptima 
-si así lo considera pero debe permitirle al usuario realizar las acciones descriptas. 
-En la parte inferior o superior debe haber un botón o link para ir al “Alta de nuevo mazo”. Si 
-el usuario ya tiene 3 mazos creados, este botón debe estar deshabilitado.
-*/
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../utils/axios';
@@ -101,7 +93,16 @@ const MazosPage = () => {
   return (
     <div className="mazos-container">
       <h2>Mazos de {localStorage.getItem('nombre')}</h2>
+      
+      {/* Si no tiene mazos */}
+      {mazos.length === 0 && (
+        <div className="mazo-card sin-mazos">
+          <h3 className="mazo-nombre">NO TIENES MAZOS</h3>
+          <p style={{ color: '#ccc' }}>Crea un nuevo mazo para comenzar a jugar.</p>
+        </div>
+      )}
 
+      {/* Obtengo mazos */}
       {mazos.map((mazo) => (
         <div key={mazo.id} className="mazo-card">
           {mazoEditandoId === mazo.id ? (

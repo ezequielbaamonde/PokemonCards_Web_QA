@@ -1,21 +1,3 @@
-/*
-Para crear un nuevo mazo el usuario deberá completar un formulario con:  
-●  nombre del mazo (máximo de 20 caracteres). 
-●  Listado de todas las cartas disponibles para seleccionar.  
-○  Este listado debe contener las características que den una vista relevante de 
-la carta (nombre, puntos de ataque, atributo, etc). 
-○  La manera en que se muestra el listado, la información de las cartas y su 
-modo de selección queda a su criterio. Por ejemplo, una imagen de la carta 
-junto a un checkbox para seleccionarla. 
-○  El listado podrá filtrarse para reducir la cantidad de cartas que se ven. En la 
-parte superior, debe haber un filtro/buscador con 2 criterios: 
-●  “Atributo” de la carta, 
-●  nombre de la carta, e  
-●  incluir un botón para “limpiar” los filtros. 
-En caso que el usuario ya tenga un máximo de 3 mazos creados, se debe devolver el error 
-correspondiente cuando este quiera guardar el mazo. Idem si ocurre otro error al intentar 
-guardar el mazo. 
-*/
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../utils/axios';
