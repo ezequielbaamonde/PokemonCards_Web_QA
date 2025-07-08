@@ -1,6 +1,7 @@
 /* Punto de entrada de la aplicacion que renderiza el componente raíz en el DOM */
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom';
 
 //Estilos
 import './index.css'
@@ -19,7 +20,11 @@ createRoot(document.getElementById('root')).render(
   Esto es útil para detectar problemas potenciales en el código, pero puede ser molesto durante
   el desarrollo si se generan muchos mensajes de advertencia o error.
   */
+
+ /* Envolvemos la APP con BrowserRouter para el manejo de rutas */
+ <BrowserRouter>
   <App />
+ </BrowserRouter>
 )
 
 

@@ -15,12 +15,12 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
-    if (!nombre || !password || !repetirPassword) {
-      toast.error('Todos los campos son obligatorios.');
+    if (!nombre && !password && !repetirPassword) {
+      toast.error('Debe ingresar al menos un campo a modificar.');
       return;
     }
 
-    if (password !== repetirPassword) {
+    if ((password || repetirPassword) && password !== repetirPassword) {
       toast.error('Las contraseñas no coinciden.');
       return;
     }
@@ -29,11 +29,12 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
     const token = localStorage.getItem('token');
     const userId = localStorage.getItem('usuarioId'); //ID usuario logueado
 
+    const payload = {}; //Para enviar solo el campo a modificar
+    if (nombre) payload.nombre = nombre;
+    if (password) payload.password = password;
+
     try {
-      const response = await API.put(`/usuarios/${userId}`, { //Se toma el ID del usuario logueado en localStorage
-        nombre,
-        password
-      }, {
+      const response = await API.put(`/usuarios/${userId}`, payload, { //Se toma el ID del usuario logueado en localStorage
         headers: {
           Authorization: `Bearer ${token}` //Token del localstorage
         }
@@ -47,8 +48,12 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
         setPassword('');
         setRepetirPassword('');
 
-        localStorage.setItem('nombre', nombre); // Actualizar localStorage
-        setUser({ nombre: nombre });// Actualizar contexto global para el navbar
+        //Si se cambia el nombre, actualizó
+        if (nombre) {
+          localStorage.setItem('nombre', nombre);
+          setUser({ nombre });
+        }
+
         navigate('/');// Redirigir al inicio
       }  
     } catch (err) {
@@ -86,7 +91,7 @@ const EditUserPage = ({ setUser }) => { //Recibe prop para actualizar el nombre 
             type="password"
             value={repetirPassword}
             onChange={(e) => setRepetirPassword(e.target.value)}
-            required
+            required={!!password} // solo requerido si se escribió algo en 'password' | '!!password' convierte el valor de password en un booleano
           />
         </div>
 

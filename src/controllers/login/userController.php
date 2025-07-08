@@ -34,7 +34,7 @@ $app->post('/login', function (Request $request, Response $response) {
     if ($user && password_verify($password, $user['password'])) {
         $secretKey = "1983temandealab";
         $issuedAt = time();
-        $expirationTime = $issuedAt + 3600; // 1 hora
+        $expirationTime = $issuedAt + 3600; // Una hora
 
         //Establece la zona horaria a Buenos Aires
         date_default_timezone_set('America/Argentina/Buenos_Aires');
@@ -127,27 +127,6 @@ $app->post('/registro', function (Request $request, Response $response) {
 /*-----------------------------------------------------------------------*/
 /*-----------------------------------------------------------------------*/
 
-/*Valida TOKEN retornado tras LOGIN.
-$app->get('/perfil', function (Request $request, Response $response) {
-    try {
-        $user = $request->getAttribute('jwt'); // decodifica el token JWT
-        $response->getBody()->write(json_encode([ // devuelve el token decodificado
-            'mensaje' => 'Bienvenido ' . $user->username,
-            'id' => $user->sub // id del usuario
-        ]));
-        return $response->withHeader('Content-Type', 'application/json');
-    } catch (Exception $e) {
-        $response->getBody()->write(json_encode([  // devuelve un error si no se puede decodificar el token
-            'error' => 'Error al procesar la solicitud',
-            'mensaje' => $e->getMessage() // mensaje de error
-        ]));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
-    }
-})->add($jwtMiddleware); // agrega el middleware JWT a la ruta /perfil*/
-
-/*-----------------------------------------------------------------------*/
-/*-----------------------------------------------------------------------*/
-
 // PUT: Actualiza el nombre de usuario y la contraseña de un ID | Valida token logueado.
 $app->put('/usuarios/{usuario}', function (Request $request, Response $response, array $args) {
     $userIdParam = $args['usuario'];
@@ -165,22 +144,27 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
         return $response->withHeader('Content-Type', 'application/json')->withStatus(403);
     }
 
-    // 3. Validar entrada
-    if (!$newUsername || !$newPassword) {
-        $response->getBody()->write(json_encode(['error' => 'Nombre y contraseña son obligatorios']));
+    // 3. Validar que al menos uno de los campos esté presente
+    if (!$newUsername && !$newPassword) {
+        $response->getBody()->write(json_encode(['error' => 'Debes ingresar al menos un campo a modificar (nombre o contraseña).']));
         return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
     }
 
-    $nameError = validateName($newUsername);
-    if ($nameError) {
-        $response->getBody()->write(json_encode(['error' => $nameError]));
-        return $response->withStatus(400);
+    // Validaciones individuales
+    if ($newUsername) {
+        $nameError = validateName($newUsername);
+        if ($nameError) {
+            $response->getBody()->write(json_encode(['error' => $nameError]));
+            return $response->withStatus(400);
+        }
     }
 
-    $passwordError = validatePassword($newPassword);
-    if ($passwordError) {
-        $response->getBody()->write(json_encode(['error' => $passwordError]));
-        return $response->withStatus(400);
+    if ($newPassword) {
+        $passwordError = validatePassword($newPassword);
+        if ($passwordError) {
+            $response->getBody()->write(json_encode(['error' => $passwordError]));
+            return $response->withStatus(400);
+        }
     }
 
     // 4. Actualizar en la base de datos
@@ -197,11 +181,28 @@ $app->put('/usuarios/{usuario}', function (Request $request, Response $response,
         return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
     }
 
-    $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
-    $stmt = $db->prepare("UPDATE usuario SET nombre = :newUsername, password = :newPassword WHERE id = :oldUserId");
-    $stmt->bindParam(':newUsername', $newUsername);
-    $stmt->bindParam(':newPassword', $hashedPassword);
-    $stmt->bindParam(':oldUserId', $userIdParam);
+    /* Armar un UPDATE dinámico
+    Se necesita construir la consulta SQL de forma dinámica, es decir, solo incluir en el UPDATE los campos que
+    realmente se recibieron. */
+    $campos = []; // guardará strings como 'nombre = :nombre', 'password = :password'
+    $valores = [':userId' => $userIdParam]; // este siempre se usa en el WHERE
+
+    if ($newUsername) {
+        $campos[] = 'nombre = :nombre'; // añade campo SQL
+        $valores[':nombre'] = $newUsername; // añade valor para bind
+    }
+    if ($newPassword) {
+        $campos[] = 'password = :password';
+        $valores[':password'] = password_hash($newPassword, PASSWORD_BCRYPT);
+    }
+
+    $sql = 'UPDATE usuario SET ' . implode(', ', $campos) . ' WHERE id = :userId';
+    // implode(', ', $campos) convierte el array en un string separado por comas, por ejemplo: 'nombre = :nombre, password = :password'
+    $stmt = $db->prepare($sql);
+
+    foreach ($valores as $key => $val) {
+        $stmt->bindValue($key, $val); // vincula cada :nombre, :password y :userId
+    }
 
     if ($stmt->execute()) {
         $response->getBody()->write(json_encode([

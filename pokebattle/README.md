@@ -7,6 +7,7 @@
              API.GET
              etc...
  > Permite un código más limpio y reutilizable
+ > Se creo una función utilitaria que importamos para decodificar el token y corroborar su expiración
 
 ## Modificaciones en Back-End.
 > Se añadió las políticas CORS para las respuestas por parte del servidor a solicitudes HTTP del cliente. Estas fueron añadidas en el index.php del backend del proyecto mediante HEADERS. Además, en cada consumo de la API se aclara la instrucción "withCredentials: true" que es esencial para que CORS permita enviar cookies o headers sensibles como el JWT Token.
@@ -30,12 +31,16 @@
 
 > Se creo el endpoint "/partidas/en-curso" para válidar si el usuario logueado cuenta con una partida en curso y en caso de ser así retornar el id_partida, el mazo_id, las cartas en juego y un mensaje. En caso de que no, retorna un error similar al endpoint de "/partidas".
 
+> Se añadio el campo 'nombre_carta_servidor' en la respuesta DATA del endpoint /jugadas para visualizar el nombre de la carta que juega el SV
+
 ## Notaciones de Código.
 > Agregando el usuariosPagina.length > 0 ? ... : ..., en el StatPage, se evita que el <tbody> contenga nada que no sea un <tr> válido.
 
 > El HOOK "useMemo" ayuda a optimizar el rendimiento evitando cálculos repetidos cuando los datos relevantes no han cambiado.
 
 > A la web se le importó fuentes mediante "fonts.googleapis" para encabezados y párrafos. Puede suceder (Desconozco exactamente el mótivo) que en alguna otra PC no se reflejen, lo he probado al clonar el repositorio del proyecto desde github.
+
+> Se envolvió APP, desde main.jsx, con BrowserRouter para el uso del navigate cuando preciso navegar entre pages. Me fue útil para el chequeo de la expiración del token.
 
 ## Librerias Instaladas.
 > Se instaló la libreria "react-router-dom" con "npm install react-router-dom" en la raíz del proyeto para linkear componentes mediante <a Link to...>.
@@ -45,3 +50,5 @@
  > Login
  > Registro
  > Update
+
+> Se instalo "jwt_decode" para decodificar el token y así corroborar su "EXP" (Expiración)

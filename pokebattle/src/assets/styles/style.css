@@ -356,6 +356,14 @@ label{
   
 }
 
+.filtros-container select {
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 200px;
+  
+}
+
 .filtros-container button {
   padding: 6px 12px;
   border-radius: 6px;

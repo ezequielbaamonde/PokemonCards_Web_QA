@@ -20,7 +20,13 @@ const CreateMazosPage = () => {
   const usuario = localStorage.getItem('usuario');
 
   useEffect(() => {
-    obtenerCartas();
+    //Si el usuario no está logueado, no debe permitir ver esta page
+    if (!usuario || !token) {
+      toast.warn('Debes iniciar sesión para acceder a esta vista');
+      navigate('/');
+    }else{
+      obtenerCartas();
+    }
   }, [filtroAtributo, filtroNombre]); //Dependencias para que se actualice instanteneamente al cambiar los filtros
 
   const obtenerCartas = async () => {
@@ -127,12 +133,25 @@ const CreateMazosPage = () => {
             value={filtroNombre}
             onChange={(e) => setFiltroNombre(e.target.value)}
           />
-          <input
+          <select
+            value={filtroAtributo}
+            onChange={(e) => setFiltroAtributo(e.target.value)}
+          >
+            <option value="">Todos los atributos</option>
+            <option value="Normal">Normal</option>
+            <option value="Fuego">Fuego</option>
+            <option value="Agua">Agua</option>
+            <option value="Planta">Planta</option>
+            <option value="Tierra">Tierra</option>
+            <option value="Piedra">Piedra</option>
+            <option value="Piedra">Volador</option>
+          </select>    
+          {/* NO ES POR TEXTO: <input
             type="text"
             placeholder="Buscar por atributo"
             value={filtroAtributo}
             onChange={(e) => setFiltroAtributo(e.target.value)}
-          />
+          />*/}
           <button type="button" onClick={limpiarFiltros}>
             Limpiar filtros
           </button>

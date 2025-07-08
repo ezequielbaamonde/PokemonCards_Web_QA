@@ -17,7 +17,13 @@ const MazosPage = () => {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    obtenerMazos();
+    //Si el usuario no está logueado, no debe permitir ver esta page
+    if (!usuario || !token) {
+      toast.warn('Debes iniciar sesión para acceder');
+      navigate('/');
+    }else{
+      obtenerMazos();
+    }
   }, []);
 
   const obtenerMazos = async () => {

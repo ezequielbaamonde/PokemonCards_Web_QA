@@ -225,7 +225,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     $idCartaServidor = jugadaServidor();
 
     $stmt = $db->prepare("
-        SELECT c.id, c.ataque, c.atributo_id
+        SELECT c.id, c.nombre, c.ataque, c.atributo_id
         FROM carta c
         WHERE c.id = :idCartaServidor
     ");
@@ -292,6 +292,7 @@ $app->post('/jugadas', function (Request $request, Response $response) {
     //El round redondea a 2 decimales
     $data = [
         'carta_servidor' => $cartaServidor,
+        'nombre_carta_servidor' => $cartaServidor['nombre'],
         'fuerza_servidor' => round($fuerzaServidor, 2),
         'fuerza_usuario' => round($fuerzaJugador, 2)
         

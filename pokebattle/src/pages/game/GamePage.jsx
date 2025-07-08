@@ -214,6 +214,7 @@ const GamePage = () => {
           <div className="zona-jugada">
             <div>
               <h4>Carta Servidor</h4>
+              <p>Monstruo: {resultadoJugada.nombre_carta_servidor}</p>
               <p>Fuerza: {resultadoJugada.fuerza_servidor}</p>
             </div>
 
