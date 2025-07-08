@@ -5,6 +5,10 @@ import API from "../../utils/axios";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+//Componentes a reutilizar
+import InputFilas from '../../components/InputFilas';
+import Button from '../../components/Button';
+
 const LoginPage = ({ setUser }) => {
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
@@ -55,7 +59,7 @@ const LoginPage = ({ setUser }) => {
     <div className='form-container'>
       <h1>Iniciar Sesión</h1>
       <form onSubmit={handleSubmit}>
-        <div className= 'form-container-div'>
+        {/* <div className= 'form-container-div'>
           <label>Usuario:</label><br />
           <input
             type="text"
@@ -63,9 +67,15 @@ const LoginPage = ({ setUser }) => {
             onChange={(e) => setUsuario(e.target.value)}
             required
           />
-        </div>
+        </div> */}
+        <InputFilas
+          label="Usuario:"
+          value={usuario}
+          onChange={(e) => setUsuario(e.target.value)}
+          required
+        />
 
-        <div className= 'form-container-div'>
+        {/* <div className= 'form-container-div'>
           <label>Contraseña:</label><br />
           <input
             type="password"
@@ -73,11 +83,19 @@ const LoginPage = ({ setUser }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </div>
-        
-        <button className="pokemon-button" type="submit">
+        </div> */}
+
+        <InputFilas
+          label="Contraseña:"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />   
+
+        <Button className="pokemon-button" type="submit">
           Ingresar
-        </button>
+        </Button>
         
 
       </form>

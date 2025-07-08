@@ -19,7 +19,7 @@ const MazosPage = () => {
   useEffect(() => {
     //Si el usuario no está logueado, no debe permitir ver esta page
     if (!usuario || !token) {
-      toast.warn('Debes iniciar sesión para acceder');
+      toast.warn('Debes iniciar sesión para acceder a esta vista');
       navigate('/');
     }else{
       obtenerMazos();

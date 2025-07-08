@@ -6,6 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 //Api
 import API from "../../utils/axios";
 
+//Componentes a reutilizar
+import InputFilas from '../../components/InputFilas';
+import Button from '../../components/Button';
+
 // Componente de registro de usuario
 function RegistroPage() {
   // Estado para los datos del formulario
@@ -51,7 +55,7 @@ function RegistroPage() {
     <div className='form-container'>
       <h1>Registro de Usuario</h1>
       <form onSubmit={handleSubmit}>
-        <div className= 'form-container-div'>
+        {/* <div className= 'form-container-div'>
           <label>Usuario (único):</label><br />
           <input
             type="text"
@@ -60,9 +64,16 @@ function RegistroPage() {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
+        <InputFilas
+          label="Usuario (único):"
+          name="usuario"
+          value={formData.usuario}
+          onChange={handleChange}
+          required
+        />
 
-        <div className= 'form-container-div'>
+        {/* <div className= 'form-container-div'>
           <label>Nombre:</label><br />
           <input
             type="text"
@@ -71,9 +82,16 @@ function RegistroPage() {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
+        <InputFilas
+          label="Nombre:"
+          name="nombre"
+          value={formData.nombre}
+          onChange={handleChange}
+          required
+        />
 
-        <div className= 'form-container-div'>
+        {/* <div className= 'form-container-div'>
           <label>Contraseña:</label><br />
           <input
             type="password"
@@ -82,11 +100,19 @@ function RegistroPage() {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
+        <InputFilas
+          label="Contraseña:"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
 
-        <button className="pokemon-button" type="submit">
-          Registrase
-        </button>
+        <Button className="pokemon-button" type="submit">
+          Registrarse
+        </Button>
       </form>
     </div>
   );
