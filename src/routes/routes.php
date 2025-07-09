@@ -6,6 +6,3 @@
  require __DIR__ . '/../helpers/determinarResultado.php';  
  require __DIR__ . '/../helpers/validateData.php';  
  require __DIR__ . '/../controllers/cards/cardsController.php';
-
- /*require __DIR__ . '/../controllers/login/jwtControler.php'; 
- require __DIR__ . '/../controllers/login/createUser.php';*/ 

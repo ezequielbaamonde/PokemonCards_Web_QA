@@ -40,10 +40,13 @@ function RegistroPage() {
       if (response.status === 201) {
         toast.success(response.data.message);
         setFormData({ usuario: "", nombre: "", password: "" }); // Limpia el formulario
+      } else {
+        console.log('Error con el servidor.')
+        toast.error('La respuesta del servidor no fue válida.');
       }
     } catch (err) {
       // Si hay un error del backend, muestra el mensaje correspondiente
-      if (err.response && err.response.data && err.response.data.error) {
+      if (err.response?.data?.error) {
         toast.error(err.response.data.error);
       } else {
         toast.error("Error inesperado. Intenta más tarde.");

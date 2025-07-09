@@ -23,14 +23,16 @@ import CreateMazosPage from './pages/mazos/CreateMazosPage';
 import GamePage from './pages/game/gamePage';
 
 const App = () => {
-  const [user, setUser] = useState(null); //Utilizamos estados dinámicos para los valores de variables, base es NULL
+  const [user, setUser] = useState(null); //Estados dinámicos para los valores de variables, base es NULL
   const [loading, setLoading] = useState(true); //Idem usuarios
-  const navigate = useNavigate(); // 👈 Necesitás esto para redirigir
+  const navigate = useNavigate();
 
   useEffect(() => {
+    //Obtengo datos del localStorage
     const token = localStorage.getItem('token');
     const usuarioNombre = localStorage.getItem('nombre'); //Obtenemos el nombre del usuario logueado desde localStorage
 
+    //Validar expiración del token
     if (token) {
       if (isTokenExpired(token)) {
         console.log('Token vencido. Cerrando sesión...');
@@ -43,10 +45,11 @@ const App = () => {
       }
     }
 
+    //Si NO existe usuario logueado
     if (!usuarioNombre) {
       console.log('No hay usuarios logueados')
       setUser(null)
-    } else {
+    } else { //Si existe usuario logueado
       console.log('Usuario logueado: ' + usuarioNombre)
       setUser({ nombre: usuarioNombre }) // NavBar reciba el nombre como objeto
     }
@@ -64,7 +67,7 @@ const App = () => {
       <main className="main-content">
         <Routes>
           <Route path="/" element={<StatPage />} /> {/* INICIO */}
-          <Route path="/register" element={<RegistroPage />} />
+          <Route path="/register" element={<RegistroPage/>} />
           <Route path="/login" element={<LoginPage setUser={setUser}/>} />
           <Route path="/update" element={<EditUserPage setUser={setUser} />} />
           <Route path="/mis-mazos" element={<MazosPage />}/>
