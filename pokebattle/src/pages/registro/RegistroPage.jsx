@@ -30,7 +30,7 @@ function RegistroPage() {
 
   // Maneja el envío del formulario
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); //Detiene la acción automática asociada al evento, dándote control total sobre lo que sucede después.
 
     try {
       // Envía los datos al backend para registrar el usuario

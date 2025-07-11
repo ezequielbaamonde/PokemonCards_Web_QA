@@ -8,7 +8,7 @@ class DB {
             hacer referencia a elementos estáticos (métodos o propiedades) de esa misma clase.*/
             //Almaceno los parametros de mi conexión por PDO
             $host = 'localhost';
-            $dbname = 'no_Existe';
+            $dbname = 'pruebaproyecto';
             $user = 'root';
             $pass = '';
             //intento conexión
