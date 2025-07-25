@@ -1,38 +1,36 @@
 <?php
 class DB {
-    private static $connection;
+    private static $connection; //Propiedad estática para almacenar la conexión a la base de datos.
+    //El modificador de acceso static permite acceder a la propiedad sin necesidad de crear una instancia de la clase.
 
     public static function getConnection() {
-        if (!self::$connection) {
-            // Configuración para Railway (usa getenv() o $_ENV)
-            $host = getenv('DB_HOST') ?: 'localhost';
-            $dbname = getenv('DB_NAME') ?: 'pruebaproyecto';
-            $user = getenv('DB_USER') ?: 'root';
-            $pass = getenv('DB_PASSWORD') ?: '';
-            $port = getenv('DB_PORT') ?: '3306';
-
+        if (!self::$connection) { /*self se usa dentro de una clase para
+            hacer referencia a elementos estáticos (métodos o propiedades) de esa misma clase.*/
+            //Almaceno los parametros de mi conexión por PDO
+            $host = 'localhost';
+            $dbname = 'pruebaproyecto';
+            $user = 'root';
+            $pass = '';
+            //intento conexión
             try {
-                self::$connection = new PDO(
-                    "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", 
-                    $user, 
-                    $pass
-                );
+                self::$connection = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
                 self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                /*echo json_encode(['success' => 'Connected to the database successfully.']);*/
             } catch (PDOException $e) {
-                // Log del error (útil para debug en Railway)
-                error_log("Error de conexión a la BD: " . $e->getMessage());
-                die(json_encode([
-                    'error' => 'Error al conectar con la base de datos',
-                    'details' => (getenv('APP_ENV') === 'production') ? null : $e->getMessage()
-                ]));
+                die(json_encode(['error' => $e->getMessage()])); //Sino, arroja mensaje por excepción
             }
         }
+
         return self::$connection;
     }
 
+    //Función para cerrar la conexión a la base de datos. Se implementa en el controlador de la app.
+    /*Se puede usar en cualquier parte de la app, pero no es necesario cerrarla explícitamente ya que
+    PHP lo hace automáticamente al finalizar el script.*/
     public static function closeConnection() {
         if (self::$connection) {
             self::$connection = null;
+            echo json_encode(['success' => 'Database connection closed.']);
         }
     }
 }

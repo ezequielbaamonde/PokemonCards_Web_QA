@@ -5,7 +5,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 // Permitir peticiones desde tu frontend (ajusta el dominio según sea necesario)
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://localhost:5173");
 // Permitir métodos HTTP específicos
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 // Permitir encabezados personalizados, como Authorization (JWT) si es necesario
@@ -14,7 +14,7 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Access-Control-Allow-Credentials: true");
 
 
-require __DIR__ . '/../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME AL DIRECTORIO VENDOR.
+require __DIR__ . '/../../vendor/autoload.php'; //COLOCAR PUNTOS PARA DIRIGIRME AL DIRECTORIO VENDOR.
 require_once __DIR__ . '/../config/db_Connect.php'; //Conexión a la base de datos.
 
 $app = AppFactory::create(); //Crea la app (El Core)
