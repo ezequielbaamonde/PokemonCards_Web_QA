@@ -9,7 +9,10 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000', // Dirección deL backend
+        target: process.env.NODE_ENV === 'production' 
+          ? 'https://tu-backend-temporal.netlify.app' 
+          : 'http://localhost:8000',
+        // target: 'http://localhost:8000', Dirección deL backend
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '')
       }
